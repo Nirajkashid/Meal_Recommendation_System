@@ -4,10 +4,9 @@ import numpy as np
 import plotly.express as px
 from sklearn.metrics.pairwise import cosine_similarity
 import io
+import random
 
-
-# Load dataset from provided CSV content
-# Hard-coded dataset as CSV string
+# Load dataset from provided CSV content                                                                                                           
 CSV_CONTENT = """item id,item,servesize,calories,protien,totalfat,satfat,transfat,cholestrol,carbs,sugar,addedsugar,sodium,menu,Ratings
 0,McVeggie Burger,168 ,402,10.24,13.83,5.34,0.16,2.49,56.54,7.9,4.49,706.13,regular,1
 1,McAloo Tikki Burger,146 ,339,8.5,11.31,4.27,0.2,1.47,5.27,7.05,4.07,545.34,regular,15
@@ -35,7 +34,6 @@ CSV_CONTENT = """item id,item,servesize,calories,protien,totalfat,satfat,transfa
 23,2 piece Chicken Strips ,58 ,164,10.17,12.38,11.41,0.09,30.1,2.68,0.72,0,477.22,regular,1
 24,3 piece Chicken Strips , 87 ,246,15.26,18.57,17.12,75.26,45.15,4.02,0.39,0,715.83,regular,19
 25,5 piece Chicken Strips , 145 ,411,25.43,28.54,0.15,0.08,6.7,0.73,0.55,0,1193.052,regular,8"""
-# Replace this with your actual CSV data
 
 # Data Loading and Preprocessing
 @st.cache_data
@@ -58,7 +56,7 @@ def calculate_bmi(weight, height):
     return weight / ((height/100) ** 2)
 
 # Recommendation Engine
-def get_recommendations(bmi, df):
+def get_recommendations(bmi, df, n=5):
     # Filter based on BMI category
     if bmi < 18.5:
         filtered = df[df['calories'] > 400].sort_values('calories', ascending=False)
@@ -70,20 +68,11 @@ def get_recommendations(bmi, df):
         filtered = df[df['calories'] < 400].sort_values('calories')
         st.session_state.recommendation_type = "Low-Calorie Recommendations for Weight Management"
     
-    # Create feature matrix
-    features = filtered[['calories', 'protien', 'totalfat', 'carbs']].values
-    indices = filtered.index.values
+    # Limit to top recommendations
+    top_items = filtered.head(10)  # top 10 to choose from
+    recommendations = top_items.sample(n=min(n, len(top_items)), random_state=1)  # pick random 3-5 items
     
-    # Calculate similarity
-    if bmi < 18.5:
-        weights = [0.1, 0.4, 0.3, 0.2]  # Higher protein focus
-    else:
-        weights = [0.4, 0.3, 0.2, 0.1]  # Lower calorie focus
-    
-    similarities = cosine_similarity([weights], features)
-    top_indices = similarities.argsort()[0][-10:][::-1]
-    
-    return filtered.iloc[top_indices]
+    return recommendations
 
 # Visualization Functions
 def plot_calorie_distribution(df):
@@ -94,14 +83,22 @@ def plot_calorie_distribution(df):
     st.plotly_chart(fig, use_container_width=True)
 
 def plot_nutrition_pie(recommendations):
-    fig = px.pie(recommendations, 
-                values=['protien', 'totalfat', 'carbs'], 
-                names=['Protein', 'Fat', 'Carbs'],
-                title='Nutritional Composition')
+    summed_values = recommendations[['protien', 'totalfat', 'carbs']].sum()
+    fig = px.pie(values=summed_values, 
+                 names=['Protein', 'Fat', 'Carbs'],
+                 title='Macronutrient Composition (Recommended Meals)')
+    st.plotly_chart(fig, use_container_width=True)
+
+def plot_line_graph(recommendations):
+    fig = px.line(recommendations, 
+                  x='item', 
+                  y=['calories', 'protien'], 
+                  markers=True,
+                  title='Calories & Protein Across Recommendations')
     st.plotly_chart(fig, use_container_width=True)
 
 # Main Page Layout
-st.title("Personalized Meal Recommendations")
+st.title("🍔 Personalized Meal Recommendations 🍔")
 
 # BMI Input Section
 with st.container():
@@ -123,7 +120,7 @@ with st.container():
 
 # Recommendations and Visualizations
 if st.button("Generate Recommendations"):
-    recommendations = get_recommendations(bmi, df)
+    recommendations = get_recommendations(bmi, df, n=random.randint(3, 5))  # 3 to 5 items
     
     st.header(st.session_state.recommendation_type)
     
@@ -132,17 +129,18 @@ if st.button("Generate Recommendations"):
     for idx, (_, row) in enumerate(recommendations.iterrows()):
         with cols[idx % 3]:
             st.markdown(f"""
-            <div class="meal-card">
-                <h4>{row['item']}</h4>
-                <p>Calories: {row['calories']:.0f}</p>
-                <p>Protein: {row['protien']}g</p>
-                <p>Carbs: {row['carbs']}g</p>
-                <p>Fat: {row['totalfat']}g</p>
-                <p>Rating: {row['Ratings']}/20</p>
+            <div style="background-color: #f9f9f9; padding: 10px; border-radius: 10px;">
+                <h4 style="color: #ff4b4b;">{row['item']}</h4>
+                <p>🍽️ Calories: <b>{row['calories']:.0f}</b></p>
+                <p>🥩 Protein: <b>{row['protien']}g</b></p>
+                <p>🥖 Carbs: <b>{row['carbs']}g</b></p>
+                <p>🧈 Fat: <b>{row['totalfat']}g</b></p>
+                <p>⭐ Rating: <b>{row['Ratings']}/20</b></p>
             </div>
             """, unsafe_allow_html=True)
     
     # Show visualizations
-    st.header("Nutrition Insights")
+    st.header("📊 Nutrition Insights")
     plot_calorie_distribution(df)
     plot_nutrition_pie(recommendations)
+    plot_line_graph(recommendations)
