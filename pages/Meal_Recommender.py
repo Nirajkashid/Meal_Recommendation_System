@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 from sklearn.metrics.pairwise import cosine_similarity
+import io
+
 
 # Load dataset from provided CSV content
 # Hard-coded dataset as CSV string
