@@ -1,124 +1,143 @@
-/* Root variables for light and dark themes */
-:root {
-    --bg-color: #f5f5f5;
-    --card-bg: #e0e0e0;
-    --text-color: #212121;
-    --secondary-text-color: #333333;
-    --tab-bg: #dcdcdc;
-    --button-bg: #FF4B4B;
-    --button-hover-bg: #FF3333;
-    --border-color: #ccc;
-    --box-shadow: rgba(0, 0, 0, 0.1);
-}
-
-.dark-mode {
-    --bg-color: #1e1e1e;
-    --card-bg: #2c2c2c;
-    --text-color: #ffffff;
-    --secondary-text-color: #eeeeee;
-    --tab-bg: #333333;
-    --button-bg: #FF4B4B;
-    --button-hover-bg: #e63946;
-    --border-color: #555555;
-    --box-shadow: rgba(255, 255, 255, 0.05);
-}
-
-/* App container */
 .stApp {
-    background-color: var(--bg-color);
+    background-color: #fafafa; /* Very light grey for a softer background */
     font-family: 'Arial', sans-serif;
-    color: var(--text-color);
-    transition: background-color 0.5s ease, color 0.5s ease;
+    color: #333333; /* Default text color */
 }
 
-/* Meal cards */
 .meal-card {
-    background: var(--card-bg);
-    color: var(--text-color);
+    background: #ffffff; /* White background for cards to stand out */
+    color: #212121; /* Dark text for readability */
     border-radius: 10px;
     padding: 1.5rem;
     margin: 1rem;
-    box-shadow: 0 4px 12px var(--box-shadow);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background-image: linear-gradient(135deg, var(--card-bg), #bdbdbd1f);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
 }
 
 .meal-card:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
 }
 
 .meal-card.collab {
-    border-left: 4px solid #4CAF50;
+    border-left: 4px solid #4CAF50; /* Green border for collaborative recommendations */
 }
 
-/* Buttons */
 .stButton>button {
-    background-color: var(--button-bg);
+    background-color: #FF4B4B; /* Red button for primary actions */
     color: white;
     border-radius: 25px;
     padding: 0.5rem 2rem;
     border: none;
     font-size: 1.1rem;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background-color 0.2s;
 }
 
 .stButton>button:hover {
-    background-color: var(--button-hover-bg);
-    transform: scale(1.05);
+    background-color: #FF3333; /* Darker red on hover */
 }
 
-/* Headings */
 h1, h2, h3 {
-    color: var(--secondary-text-color);
+    color: #2C3E50; /* Dark blue for headings */
 }
 
-/* Feature boxes */
-.feature-box, .viz-description, .viz-info, .cta-box, .insight-box {
-    background-color: var(--card-bg);
-    color: var(--text-color);
+.feature-box {
+    background-color: #ffffff; /* White background for feature boxes */
+    color: #212121;
     border-radius: 10px;
     padding: 1.5rem;
     margin: 1.5rem 0;
-    box-shadow: 0 4px 12px var(--box-shadow);
-    background-image: linear-gradient(135deg, var(--card-bg), #bdbdbd1f);
-    transition: background-color 0.5s ease, color 0.5s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.feature-box h4 {
+    color: #FF4B4B; /* Red for subheadings */
+    margin-bottom: 1rem;
+}
+
+.feature-box ul {
+    padding-left: 1.5rem;
+}
+
+.feature-box li {
+    margin-bottom: 0.5rem;
+}
+
+.viz-description {
+    background-color: #ffffff; /* White background for visualization descriptions */
+    color: #333333;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-left: 4px solid #3498DB; /* Blue border for visualization descriptions */
+}
+
+.viz-info {
+    background-color: #ffffff; /* White background for visualization info */
+    color: #333333;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-left: 4px solid #9B59B6; /* Purple border for visualization info */
 }
 
 .cta-box {
-    border: 2px dashed var(--button-bg);
+    background-color: #f0f0f0; /* Very soft grey for call-to-action boxes */
+    color: #212121;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    text-align: center;
+    border: 2px dashed #FF4B4B; /* Red dashed border for call-to-action boxes */
 }
 
-.insight-box.underweight { border-left: 4px solid #FF9800; }
-.insight-box.normal { border-left: 4px solid #4CAF50; }
-.insight-box.overweight { border-left: 4px solid #F44336; }
+.insight-box {
+    background-color: #ffffff; /* White background for insight boxes */
+    color: #333333;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
 
-/* Tabs styling */
+.insight-box.underweight {
+    border-left: 4px solid #FF9800; /* Orange border for underweight insights */
+}
+
+.insight-box.normal {
+    border-left: 4px solid #4CAF50; /* Green border for normal weight insights */
+}
+
+.insight-box.overweight {
+    border-left: 4px solid #F44336; /* Red border for overweight insights */
+}
+
+/* Tabs Styling */
 .stTabs [data-baseweb="tab-list"] {
     gap: 1rem;
 }
 
 .stTabs [data-baseweb="tab"] {
     height: 3rem;
-    background-color: var(--tab-bg);
-    color: var(--text-color);
+    white-space: pre-wrap;
+    background-color: #e0e0e0; /* Light grey for tabs */
+    color: #333333;
     border-radius: 4px 4px 0 0;
     padding: 0.5rem 1rem;
-    box-shadow: 0 -2px 5px var(--box-shadow);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
 }
 
 .stTabs [aria-selected="true"] {
-    background-color: var(--button-bg);
+    background-color: #FF4B4B; /* Red for selected tab */
     color: white;
 }
 
-/* Inputs */
+/* Input Fields */
 input[type="number"], select {
-    background-color: var(--card-bg);
-    color: var(--text-color);
+    background-color: #f0f0f0; /* Light grey for input fields */
+    color: #333333;
     border-radius: 5px;
     padding: 0.5rem;
-    border: 1px solid var(--border-color);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    border: 1px solid #ccc;
 }
