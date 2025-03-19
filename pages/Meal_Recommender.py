@@ -9,7 +9,7 @@ from streamlit_extras.switch_page_button import switch_page
 
 st.set_page_config(page_title="Meal Recommender", layout="wide")
 
-# Load dataset from provided CSV content                                                                                                           
+# Load dataset from provided CSV content
 CSV_CONTENT = """item id,item,servesize,calories,protien,totalfat,satfat,transfat,cholestrol,carbs,sugar,addedsugar,sodium,menu,Ratings
 0,McVeggie Burger,168 ,402,10.24,13.83,5.34,0.16,2.49,56.54,7.9,4.49,706.13,regular,1
 1,McAloo Tikki Burger,146 ,339,8.5,11.31,4.27,0.2,1.47,5.27,7.05,4.07,545.34,regular,15
@@ -71,68 +71,70 @@ df, user_preferences = load_data()
 def calculate_bmi(weight, height):
     return weight / ((height/100) ** 2)
 
-# Content-Based Filtering
+# Content-Based Filtering with dynamic recommendation count
 def content_based_recommendations(bmi, df):
-    # Create feature matrix for content-based filtering
-    # Normalize the nutritional values
+    # Normalize nutritional values for content-based filtering
     df_norm = df.copy()
     for feature in ['calories', 'protien', 'totalfat', 'carbs']:
         df_norm[feature] = (df_norm[feature] - df_norm[feature].min()) / (df_norm[feature].max() - df_norm[feature].min())
     
     features = df_norm[['calories', 'protien', 'totalfat', 'carbs']].values
     
-    # Define user profile based on BMI
+    # Define user profile and set dynamic recommendation count based on BMI
     if bmi < 18.5:
         user_profile = [0.1, 0.5, 0.2, 0.2]  # Higher protein for underweight
         filtered = df[df['calories'] >= df['calories'].mean()]
         recommendation_type = "High-Calorie Recommendations for Weight Gain"
+        num_recommendations = 5  # More recommendations for underweight
     elif 18.5 <= bmi < 25:
         user_profile = [0.25, 0.25, 0.25, 0.25]  # Balanced for normal weight
         filtered = df
         recommendation_type = "Balanced Meal Recommendations"
+        num_recommendations = 4  # Medium number for normal weight
     else:
         user_profile = [0.5, 0.3, 0.1, 0.1]  # Low calories, higher protein for overweight
         filtered = df[df['calories'] <= df['calories'].mean()]
         recommendation_type = "Low-Calorie Recommendations for Weight Management"
+        num_recommendations = 3  # Fewer recommendations for overweight/obese
     
-    # Calculate cosine similarity
+    # Calculate cosine similarity between user profile and meal features
     similarities = cosine_similarity([user_profile], features)
     
-    # Get indices of top meals
+    # Get similarity scores for meals in the filtered dataframe
     indices = filtered.index.tolist()
     similarity_scores = [(i, similarities[0][i]) for i in indices]
     similarity_scores = sorted(similarity_scores, key=lambda x: x[1], reverse=True)
     
-    # Get top 10 recommendations
-    top_indices = [i[0] for i in similarity_scores[:10]]
+    # Select top N recommendations based on dynamic count
+    top_indices = [i[0] for i in similarity_scores[:num_recommendations]]
     
-    return filtered.loc[top_indices], recommendation_type
+    return filtered.loc[top_indices], recommendation_type, num_recommendations
 
-# Collaborative Filtering
-def collaborative_filtering(user_preferences, content_based_recs):
-    # Get content-based recommended meal indices
+# Collaborative Filtering with dynamic recommendation count
+def collaborative_filtering(user_preferences, content_based_recs, num_collab_recs):
+    # Get indices of content-based recommendations
     cb_indices = content_based_recs.index.tolist()
     
-    # Create a synthetic current user
+    # Create a synthetic current user by assigning high ratings for the content-based recommendations
     current_user = pd.Series(0, index=user_preferences.columns)
-    current_user[cb_indices] = 5  # Mark content-based recommendations as highly preferred
+    current_user[cb_indices] = 5
     
-    # Calculate similarity between current user and all users
+    # Calculate cosine similarity between current user and all other users
     user_similarities = cosine_similarity([current_user.values], user_preferences.values)[0]
     
     # Get top 10 similar users
     similar_users = user_preferences.iloc[np.argsort(user_similarities)[-10:]]
     
-    # Get recommendations from similar users
+    # Aggregate recommendations from similar users
     collaborative_recs = pd.Series(0, index=user_preferences.columns)
     for _, user in similar_users.iterrows():
         collaborative_recs += user
     
-    # Remove already recommended meals
+    # Remove meals already recommended by content-based filtering
     collaborative_recs[cb_indices] = 0
     
-    # Get top 5 recommendations
-    top_collab_indices = collaborative_recs.nlargest(5).index.tolist()
+    # Get top N recommendations based on dynamic count
+    top_collab_indices = collaborative_recs.nlargest(num_collab_recs).index.tolist()
     
     return df.loc[top_collab_indices]
 
@@ -152,15 +154,17 @@ with col_nav3:
     if st.button("Visualizations →", use_container_width=True):
         switch_page("Visualizations")
 
-# BMI Input Section
+# Personal Details & BMI Input Section
 with st.container():
-    st.header("Calculate Your BMI")
+    st.header("Enter Your Personal Details")
     col1, col2 = st.columns(2)
     with col1:
-        weight = st.number_input("Weight (kg)", min_value=30.0, max_value=200.0, value=70.0)
+        weight = st.number_input("Weight (kg)", min_value=20.0, max_value=200.0, value=00.0)
+        height = st.number_input("Height (cm)", min_value=100.0, max_value=250.0, value=00.0)
     with col2:
-        height = st.number_input("Height (cm)", min_value=100.0, max_value=250.0, value=170.0)
-
+        gender = st.selectbox("Gender", options=["Male", "Female", "Prefer not to say"])
+        age = st.number_input("Age", min_value=5, max_value=120, value=00)
+    
     bmi = calculate_bmi(weight, height)
     st.subheader(f"Your BMI: {bmi:.1f}")
     
@@ -173,11 +177,11 @@ with st.container():
 
 # Recommendations and Visualizations
 if st.button("Generate Recommendations", key="gen_rec"):
-    # Content-based filtering
-    content_recs, recommendation_type = content_based_recommendations(bmi, df)
+    # Content-based filtering with dynamic recommendation count
+    content_recs, recommendation_type, num_recs = content_based_recommendations(bmi, df)
     
-    # Collaborative filtering
-    collaborative_recs = collaborative_filtering(user_preferences, content_recs)
+    # Collaborative filtering with the same number of recommendations
+    collaborative_recs = collaborative_filtering(user_preferences, content_recs, num_recs)
     
     # Save recommendations to session state for visualization page
     st.session_state.content_recs = content_recs
@@ -231,3 +235,4 @@ if st.button("Generate Recommendations", key="gen_rec"):
     
     if st.button("View Detailed Visualizations", key="view_viz"):
         switch_page("Visualizations")
+
