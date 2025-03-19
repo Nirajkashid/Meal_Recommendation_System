@@ -47,61 +47,114 @@ def load_data():
     df['carbs'] = df['carbs'].astype(float)
     df['category'] = df['menu'].apply(lambda x: 'Healthy' if x in ['regular', 'breakfast'] else 'Treat')
     
-    return df
+    # Generate synthetic user preferences for collaborative filtering
+    np.random.seed(42)
+    num_users = 100
+    user_preferences = pd.DataFrame(index=range(num_users), columns=df.index)
+    
+    for user in range(num_users):
+        # Assign random preferences (ratings) to 20% of meals
+        for meal in np.random.choice(df.index, size=int(0.2 * len(df)), replace=False):
+            user_preferences.loc[user, meal] = np.random.randint(1, 6)
+    
+    # Fill NaN with 0 (not rated)
+    user_preferences = user_preferences.fillna(0)
+    
+    return df, user_preferences
 
-df = load_data()
+df, user_preferences = load_data()
 
 # BMI Calculator
 def calculate_bmi(weight, height):
     return weight / ((height/100) ** 2)
 
-# Recommendation Engine
-def get_recommendations(bmi, df, n=5):
-    # Filter based on BMI category
+# Content-Based Filtering
+def content_based_recommendations(bmi, df):
+    # Create feature matrix for content-based filtering
+    # Normalize the nutritional values
+    df_norm = df.copy()
+    for feature in ['calories', 'protien', 'totalfat', 'carbs']:
+        df_norm[feature] = (df_norm[feature] - df_norm[feature].min()) / (df_norm[feature].max() - df_norm[feature].min())
+    
+    features = df_norm[['calories', 'protien', 'totalfat', 'carbs']].values
+    
+    # Define user profile based on BMI
     if bmi < 18.5:
-        filtered = df[df['calories'] > 400].sort_values('calories', ascending=False)
-        st.session_state.recommendation_type = "High-Calorie Recommendations for Weight Gain"
+        user_profile = [0.1, 0.5, 0.2, 0.2]  # Higher protein for underweight
+        filtered = df[df['calories'] >= df['calories'].mean()]
+        recommendation_type = "High-Calorie Recommendations for Weight Gain"
     elif 18.5 <= bmi < 25:
-        filtered = df.sort_values('Ratings', ascending=False)
-        st.session_state.recommendation_type = "Balanced Meal Recommendations"
+        user_profile = [0.25, 0.25, 0.25, 0.25]  # Balanced for normal weight
+        filtered = df
+        recommendation_type = "Balanced Meal Recommendations"
     else:
-        filtered = df[df['calories'] < 400].sort_values('calories')
-        st.session_state.recommendation_type = "Low-Calorie Recommendations for Weight Management"
+        user_profile = [0.5, 0.3, 0.1, 0.1]  # Low calories, higher protein for overweight
+        filtered = df[df['calories'] <= df['calories'].mean()]
+        recommendation_type = "Low-Calorie Recommendations for Weight Management"
     
-    # Limit to top recommendations
-    top_items = filtered.head(10)  # top 10 to choose from
-    recommendations = top_items.sample(n=min(n, len(top_items)), random_state=1)  # pick random 3-5 items
+    # Calculate cosine similarity
+    similarities = cosine_similarity([user_profile], features)
     
-    return recommendations
+    # Get indices of top meals
+    indices = filtered.index.tolist()
+    similarity_scores = [(i, similarities[0][i]) for i in indices]
+    similarity_scores = sorted(similarity_scores, key=lambda x: x[1], reverse=True)
+    
+    # Get top 10 recommendations
+    top_indices = [i[0] for i in similarity_scores[:10]]
+    
+    return filtered.loc[top_indices], recommendation_type
 
-# Visualization Functions
-def plot_calorie_distribution(df):
-    fig = px.histogram(df, x='calories', 
-                      title='Calorie Distribution of Meals',
-                      color='category',
-                      nbins=20)
-    st.plotly_chart(fig, use_container_width=True)
-
-def plot_nutrition_pie(recommendations):
-    summed_values = recommendations[['protien', 'totalfat', 'carbs']].sum()
-    fig = px.pie(values=summed_values, 
-                 names=['Protein', 'Fat', 'Carbs'],
-                 title='Macronutrient Composition (Recommended Meals)')
-    st.plotly_chart(fig, use_container_width=True)
-
-def plot_line_graph(recommendations):
-    fig = px.line(recommendations, 
-                  x='item', 
-                  y=['calories', 'protien'], 
-                  markers=True,
-                  title='Calories & Protein Across Recommendations')
-    st.plotly_chart(fig, use_container_width=True)
+# Collaborative Filtering
+def collaborative_filtering(user_preferences, content_based_recs):
+    # Get content-based recommended meal indices
+    cb_indices = content_based_recs.index.tolist()
+    
+    # Create a synthetic current user
+    current_user = pd.Series(0, index=user_preferences.columns)
+    current_user[cb_indices] = 5  # Mark content-based recommendations as highly preferred
+    
+    # Calculate similarity between current user and all users
+    user_similarities = cosine_similarity([current_user.values], user_preferences.values)[0]
+    
+    # Get top 10 similar users
+    similar_users = user_preferences.iloc[np.argsort(user_similarities)[-10:]]
+    
+    # Get recommendations from similar users
+    collaborative_recs = pd.Series(0, index=user_preferences.columns)
+    for _, user in similar_users.iterrows():
+        collaborative_recs += user
+    
+    # Remove already recommended meals
+    collaborative_recs[cb_indices] = 0
+    
+    # Get top 5 recommendations
+    top_collab_indices = collaborative_recs.nlargest(5).index.tolist()
+    
+    return df.loc[top_collab_indices]
 
 # Main Page Layout
-st.title("🍔 Personalized Meal Recommendations 🍔")
+st.set_page_config(page_title="Meal Recommender", layout="wide")
+
+# Load CSS
+with open('style1.css') as f:
+    css = f.read()
+st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
+
+st.title("Personalized Meal Recommendations")
+
+# Navigation Buttons
+col_nav1, col_nav2, col_nav3 = st.columns([1, 1, 1])
+with col_nav1:
+    if st.button("← Home", use_container_width=True):
+        switch_page("HomePage")
+with col_nav3:
+    if st.button("Visualizations →", use_container_width=True):
+        switch_page("Visualizations")
 
 # BMI Input Section
 with st.container():
+    st.header("Calculate Your BMI")
     col1, col2 = st.columns(2)
     with col1:
         weight = st.number_input("Weight (kg)", min_value=30.0, max_value=200.0, value=70.0)
@@ -119,28 +172,62 @@ with st.container():
         st.error("Overweight/Obesity - Recommending low-calorie meals")
 
 # Recommendations and Visualizations
-if st.button("Generate Recommendations"):
-    recommendations = get_recommendations(bmi, df, n=random.randint(3, 5))  # 3 to 5 items
+if st.button("Generate Recommendations", key="gen_rec"):
+    # Content-based filtering
+    content_recs, recommendation_type = content_based_recommendations(bmi, df)
     
-    st.header(st.session_state.recommendation_type)
+    # Collaborative filtering
+    collaborative_recs = collaborative_filtering(user_preferences, content_recs)
     
-    # Display recommendations
+    # Save recommendations to session state for visualization page
+    st.session_state.content_recs = content_recs
+    st.session_state.collaborative_recs = collaborative_recs
+    st.session_state.recommendation_type = recommendation_type
+    st.session_state.bmi = bmi
+    
+    # Display content-based recommendations
+    st.header(recommendation_type)
+    st.markdown("**Recommended meals based on your nutritional needs:**")
+    
     cols = st.columns(3)
-    for idx, (_, row) in enumerate(recommendations.iterrows()):
+    for idx, (_, row) in enumerate(content_recs.iterrows()):
         with cols[idx % 3]:
             st.markdown(f"""
-            <div style="background-color: #f9f9f9; padding: 10px; border-radius: 10px;">
-                <h4 style="color: #ff4b4b;">{row['item']}</h4>
-                <p>🍽️ Calories: <b>{row['calories']:.0f}</b></p>
-                <p>🥩 Protein: <b>{row['protien']}g</b></p>
-                <p>🥖 Carbs: <b>{row['carbs']}g</b></p>
-                <p>🧈 Fat: <b>{row['totalfat']}g</b></p>
-                <p>⭐ Rating: <b>{row['Ratings']}/20</b></p>
+            <div class="meal-card">
+                <h4>{row['item']}</h4>
+                <p>Calories: {row['calories']:.0f}</p>
+                <p>Protein: {row['protien']}g</p>
+                <p>Carbs: {row['carbs']}g</p>
+                <p>Fat: {row['totalfat']}g</p>
+                <p>Rating: {row['Ratings']}/20</p>
             </div>
             """, unsafe_allow_html=True)
     
-    # Show visualizations
-    st.header("📊 Nutrition Insights")
-    plot_calorie_distribution(df)
-    plot_nutrition_pie(recommendations)
-    plot_line_graph(recommendations)
+    # Display collaborative recommendations
+    st.header("You Might Also Like")
+    st.markdown("**Recommended based on similar users' preferences:**")
+    
+    cols = st.columns(3)
+    for idx, (_, row) in enumerate(collaborative_recs.iterrows()):
+        with cols[idx % 3]:
+            st.markdown(f"""
+            <div class="meal-card collab">
+                <h4>{row['item']}</h4>
+                <p>Calories: {row['calories']:.0f}</p>
+                <p>Protein: {row['protien']}g</p>
+                <p>Carbs: {row['carbs']}g</p>
+                <p>Fat: {row['totalfat']}g</p>
+                <p>Rating: {row['Ratings']}/20</p>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    # Call to action
+    st.markdown("""
+    <div class="cta-box">
+        <h3>Want to see more insights?</h3>
+        <p>Check out our detailed visualizations for a deeper understanding of your meal recommendations!</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    if st.button("View Detailed Visualizations", key="view_viz"):
+        switch_page("Visualizations")
