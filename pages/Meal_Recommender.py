@@ -161,11 +161,17 @@ with st.container():
     st.header("Enter Your Personal Details")
     col1, col2 = st.columns(2)
     with col1:
-        weight = st.number_input("Weight (kg)", min_value=00.0, max_value=200.0, value=00.0)
-        height = st.number_input("Height (cm)", min_value=00.0, max_value=250.0, value=00.0)
+        weight = st.number_input("Weight (kg)", min_value=00.0, max_value=200.0, value=st.session_state.get('weight', 00.0))
+        height = st.number_input("Height (cm)", min_value=00.0, max_value=250.0, value=st.session_state.get('height', 00.0))
     with col2:
-        gender = st.selectbox("Gender", options=["Male", "Female", "Prefer not to say"])
-        age = st.number_input("Age", min_value=00, max_value=120, value=00)
+        gender = st.selectbox("Gender", options=["Male", "Female", "Prefer not to say"], index=st.session_state.get('gender_index', 0))
+        age = st.number_input("Age", min_value=00, max_value=120, value=st.session_state.get('age', 00))
+    
+    # Store input values in session state
+    st.session_state.weight = weight
+    st.session_state.height = height
+    st.session_state.gender_index = ["Male", "Female", "Prefer not to say"].index(gender)
+    st.session_state.age = age
     
     bmi = calculate_bmi(weight, height)
     st.subheader(f"Your BMI: {bmi:.1f}")
@@ -237,5 +243,3 @@ if st.button("Generate Recommendations", key="gen_rec"):
     
     if st.button("View Detailed Visualizations", key="view_viz"):
         switch_page("Visualizations")
-
-
