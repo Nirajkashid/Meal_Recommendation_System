@@ -251,3 +251,30 @@ else:
                 <p>Your meal plan focuses on lower calorie options with adequate protein to support weight management. The visualizations show that recommended meals have controlled calorie content while ensuring nutritional adequacy.</p>
             </div>
             """, unsafe_allow_html=True)
+# Dark mode toggle
+st.sidebar.markdown("## Theme")
+dark_mode = st.sidebar.toggle("🌙 Dark Mode", value=False)
+
+# Dynamic CSS loader with dark mode logic
+def load_css(dark_mode):
+    with open('style1.css') as f:
+        css = f.read()
+    
+    # Add dark mode class if enabled
+    if dark_mode:
+        css += """
+        <script>
+        document.body.classList.add('dark-mode');
+        </script>
+        """
+    else:
+        css += """
+        <script>
+        document.body.classList.remove('dark-mode');
+        </script>
+        """
+
+    st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
+
+# Call the function
+load_css(dark_mode)
