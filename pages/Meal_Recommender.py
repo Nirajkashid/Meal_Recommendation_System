@@ -69,6 +69,8 @@ df, user_preferences = load_data()
 
 # BMI Calculator
 def calculate_bmi(weight, height):
+    if height == 0:
+        return 0  # or you might want to display an error message or prompt the user to enter a valid height
     return weight / ((height/100) ** 2)
 
 # Content-Based Filtering with dynamic recommendation count
@@ -159,8 +161,8 @@ with st.container():
     st.header("Enter Your Personal Details")
     col1, col2 = st.columns(2)
     with col1:
-        weight = st.number_input("Weight (kg)", min_value=1.0, max_value=200.0, value=00.0)
-        height = st.number_input("Height (cm)", min_value=1.0, max_value=250.0, value=00.0)
+        weight = st.number_input("Weight (kg)", min_value=00.0, max_value=200.0, value=00.0)
+        height = st.number_input("Height (cm)", min_value=00.0, max_value=250.0, value=00.0)
     with col2:
         gender = st.selectbox("Gender", options=["Male", "Female", "Prefer not to say"])
         age = st.number_input("Age", min_value=00, max_value=120, value=00)
