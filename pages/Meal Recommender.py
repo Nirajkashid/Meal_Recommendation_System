@@ -211,15 +211,7 @@ st.markdown(f'<div class="bmi-result">Your BMI: {bmi:.1f}</div>', unsafe_allow_h
     st.session_state.gender_index = ["Male", "Female", "Prefer not to say"].index(gender)
     st.session_state.age = age
     
-    bmi = calculate_bmi(weight, height)
-    st.subheader(f"Your BMI: {bmi:.1f}")
-    
-    if bmi < 18.5:
-        st.warning("Underweight - Recommending high-calorie meals")
-    elif 18.5 <= bmi < 25:
-        st.success("Normal Weight - Recommending balanced meals")
-    else:
-        st.error("Overweight/Obesity - Recommending low-calorie meals")
+
 
 # Styled BMI display
 st.markdown(f'<div class="bmi-result">Your BMI: {bmi:.1f}</div>', unsafe_allow_html=True)
