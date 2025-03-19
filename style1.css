@@ -141,3 +141,20 @@ input[type="number"], select {
     padding: 0.5rem;
     border: 1px solid #ccc;
 }
+/* Download button specific style */
+.download-button button {
+    background-color: #4CAF50; /* Green for download */
+    color: white;
+    border-radius: 20px;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.download-button button:hover {
+    background-color: #45A049; /* Darker green on hover */
+    transform: scale(1.05);
+}
