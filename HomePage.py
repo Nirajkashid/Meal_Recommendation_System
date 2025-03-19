@@ -26,8 +26,26 @@ with col1:
     </div>
     """, unsafe_allow_html=True)
     
-    if st.button("Get Started →", use_container_width=True):
-        switch_page("Meal_Recommender")
+    st.markdown("""
+    <div class="feature-box">
+        <h4>Features:</h4>
+        <ul>
+            <li>BMI-based meal recommendations</li>
+            <li>Content-based filtering for nutrition matching</li>
+            <li>Collaborative filtering with similar user preferences</li>
+            <li>Detailed nutrition insights</li>
+            <li>Interactive data visualizations</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    col_btn1, col_btn2 = st.columns(2)
+    with col_btn1:
+        if st.button("Get Recommendations", use_container_width=True):
+            switch_page("Meal_Recommender")
+    with col_btn2:
+        if st.button("View Visualizations", use_container_width=True):
+            switch_page("Visualizations")
 
 with col2:
     st_lottie(lottie_path, height=400, key="home_animation")
