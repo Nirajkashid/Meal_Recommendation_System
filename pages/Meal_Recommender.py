@@ -67,11 +67,127 @@ def load_data():
 
 df, user_preferences = load_data()
 
-# BMI Calculator
+st.markdown("""
+<style>
+/* Main container styling */
+.main-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+}
+
+/* BMI result styling */
+.bmi-result {
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+    margin: 20px 0;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+}
+
+/* Status message styling */
+.status-message {
+    text-align: center;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+/* Specific status styles */
+.underweight {
+    background-color: #fff3cd;
+    border-left: 5px solid #ffc107;
+    color: #856404;
+}
+
+.normal-weight {
+    background-color: #d4edda;
+    border-left: 5px solid #28a745;
+    color: #155724;
+}
+
+.overweight {
+    background-color: #f8d7da;
+    border-left: 5px solid #dc3545;
+    color: #721c24;
+}
+
+/* Input field styling */
+.stTextInput > div > div > input {
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    font-size: 16px;
+}
+
+/* Button styling */
+.stButton > button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+.stButton > button:hover {
+    background-color: #45a049;
+}
+
+/* Responsive styling */
+@media (max-width: 600px) {
+    .main-container {
+        padding: 10px;
+    }
+    
+    .bmi-result {
+        font-size: 28px;
+    }
+    
+    .status-message {
+        font-size: 16px;
+    }
+}
+</style>
+""", unsafe_allow_html=True)
+
+# Your existing BMI calculator code
 def calculate_bmi(weight, height):
-    if height == 0:
-        return 0  # or you might want to display an error message or prompt the user to enter a valid height
-    return weight / ((height/100) ** 2)
+    return weight / (height/100)**2
+
+# Streamlit UI with the styled elements
+st.title("BMI Calculator")
+
+with st.container():
+    col1, col2 = st.columns(2)
+    with col1:
+        weight = st.number_input("Weight (kg)", min_value=30.0, max_value=300.0, value=70.0)
+    with col2:
+        height = st.number_input("Height (cm)", min_value=100.0, max_value=250.0, value=170.0)
+
+bmi = calculate_bmi(weight, height)
+
+# Styled BMI display
+st.markdown(f'<div class="bmi-result">Your BMI: {bmi:.1f}</div>', unsafe_allow_html=True)
+
+# Styled recommendation messages
+if bmi < 18.5:
+    st.markdown('<div class="status-message underweight">Underweight - Recommending high-calorie meals</div>', unsafe_allow_html=True)
+elif 18.5 <= bmi < 25:
+    st.markdown('<div class="status-message normal-weight">Normal Weight - Recommending balanced meals</div>', unsafe_allow_html=True)
+else:
+    st.markdown('<div class="status-message overweight">Overweight/Obesity - Recommending low-calorie meals</div>', unsafe_allow_html=True)
+
 
 # Content-Based Filtering with dynamic recommendation count
 def content_based_recommendations(bmi, df):
