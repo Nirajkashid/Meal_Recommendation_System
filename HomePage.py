@@ -19,7 +19,7 @@ lottie_path = load_lottie("./ani.json")
 # Home Page Layout
 col1, col2 = st.columns([2, 3])
 with col1:
-    st.title("Smart Meal Recommender")
+    st.title("Meal Recommender")
     st.markdown("""
     <div style='border-left: 5px solid #FF4B4B; padding-left: 1rem;'>
     <h3 style='color: #FF4B4B;'>Get Personalized Meal Recommendations Based on Your BMI</h3>
