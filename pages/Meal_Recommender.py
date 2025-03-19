@@ -201,5 +201,20 @@ if st.button("Generate Recommendations", key="gen_rec"):
             </div>
             """, unsafe_allow_html=True)
 
+      # Download buttons for exporting recommendations
+    st.download_button(
+        label="Download Content-Based Recommendations as CSV",
+        data=content_recs.to_csv(index=False),
+        file_name="content_based_recommendations.csv",
+        mime='text/csv'
+    )
+
+    st.download_button(
+        label="Download Collaborative Recommendations as CSV",
+        data=collaborative_recs.to_csv(index=False),
+        file_name="collaborative_recommendations.csv",
+        mime='text/csv'
+    )
+
     if st.button("View Detailed Visualizations", key="view_viz"):
         switch_page("Visualizations")
