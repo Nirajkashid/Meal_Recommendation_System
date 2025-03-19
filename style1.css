@@ -179,16 +179,19 @@ input[type="number"], select {
     border-left: 5px solid var(--warning-color);
     background-color: #fff3e0;
     color: var(--warning-color);
+    color: var(--secondary-text-color);
 }
 
 .bmi-success {
     border-left: 5px solid var(--success-color);
     background-color: #e8f5e9;
     color: var(--success-color);
+    color: var(--secondary-text-color);
 }
 
 .bmi-error {
     border-left: 5px solid var(--error-color);
     background-color: #ffebee;
     color: var(--error-color);
+    color: var(--secondary-text-color);
 }
