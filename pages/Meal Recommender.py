@@ -169,17 +169,17 @@ with st.container():
         st.markdown('<h4>Weight (kg)</h4>', unsafe_allow_html=True)
         weight = st.number_input(
             " ",  # Empty label since h4 above acts as the label
-            min_value=0.0, 
+            min_value=1.0, 
             max_value=200.0, 
-            value=st.session_state.get('weight', 0.0)
+            value=st.session_state.get('weight', 70)
         )
 
         st.markdown('<h4>Height (cm)</h4>', unsafe_allow_html=True)
         height = st.number_input(
             " ",
-            min_value=0.0, 
+            min_value=1.0, 
             max_value=250.0, 
-            value=st.session_state.get('height', 0.0)
+            value=st.session_state.get('height', 172)
         )
 
     with col2:
@@ -193,9 +193,9 @@ with st.container():
         st.markdown('<h4>Age</h4>', unsafe_allow_html=True)
         age = st.number_input(
             " ",
-            min_value=0, 
+            min_value=1, 
             max_value=120, 
-            value=st.session_state.get('age', 0)
+            value=st.session_state.get('age', 25)
         )
 
     # Close the wrapper div
@@ -211,15 +211,17 @@ st.markdown(f'<div class="bmi-result">Your BMI: {bmi:.1f}</div>', unsafe_allow_h
     st.session_state.gender_index = ["Male", "Female", "Prefer not to say"].index(gender)
     st.session_state.age = age
     
- bmi = calculate_bmi(weight, height)
-    st.subheader(f"Your BMI: {bmi:.1f}")
-    
+if bmi == 0:
+    st.warning("Please enter a valid height greater than 0 to calculate BMI.")
+else:
+    st.markdown(f'<div class="bmi-output">Your BMI: {bmi:.1f}</div>', unsafe_allow_html=True)
+
     if bmi < 18.5:
-        st.warning("Underweight - Recommending high-calorie meals")
+        st.markdown('<div class="bmi-output bmi-warning">Underweight - Recommending high-calorie meals</div>', unsafe_allow_html=True)
     elif 18.5 <= bmi < 25:
-        st.success("Normal Weight - Recommending balanced meals")
+        st.markdown('<div class="bmi-output bmi-success">Normal Weight - Recommending balanced meals</div>', unsafe_allow_html=True)
     else:
-        st.error("Overweight/Obesity - Recommending low-calorie meals")
+        st.markdown('<div class="bmi-output bmi-error">Overweight/Obesity - Recommending low-calorie meals</div>', unsafe_allow_html=True)
 
 # Recommendations and Visualizations
 if st.button("Generate Recommendations", key="gen_rec"):
