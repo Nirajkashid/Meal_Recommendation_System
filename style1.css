@@ -16,6 +16,10 @@
     transform: translateY(-2px);
 }
 
+.meal-card.collab {
+    border-left: 4px solid #4CAF50;
+}
+
 .stButton>button {
     background-color: #FF4B4B;
     color: white;
@@ -31,4 +35,91 @@
 
 h1, h2, h3 {
     color: #2C3E50;
+}
+
+.feature-box {
+    background-color: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.feature-box h4 {
+    color: #FF4B4B;
+    margin-bottom: 1rem;
+}
+
+.feature-box ul {
+    padding-left: 1.5rem;
+}
+
+.feature-box li {
+    margin-bottom: 0.5rem;
+}
+
+.viz-description {
+    background-color: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-left: 4px solid #3498DB;
+}
+
+.viz-info {
+    background-color: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-left: 4px solid #9B59B6;
+}
+
+.cta-box {
+    background-color: #F8F9FA;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    text-align: center;
+    border: 2px dashed #FF4B4B;
+}
+
+.insight-box {
+    background-color: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.insight-box.underweight {
+    border-left: 4px solid #FF9800;
+}
+
+.insight-box.normal {
+    border-left: 4px solid #4CAF50;
+}
+
+.insight-box.overweight {
+    border-left: 4px solid #F44336;
+}
+
+/* Tab styling */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 1rem;
+}
+
+.stTabs [data-baseweb="tab"] {
+    height: 3rem;
+    white-space: pre-wrap;
+    background-color: white;
+    border-radius: 4px 4px 0 0;
+    padding: 0.5rem 1rem;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+}
+
+.stTabs [aria-selected="true"] {
+    background-color: #FF4B4B;
+    color: white;
 }
