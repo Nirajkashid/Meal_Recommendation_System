@@ -241,5 +241,5 @@ if st.button("Generate Recommendations", key="gen_rec"):
     </div>
     """, unsafe_allow_html=True)
     
-    if st.button("View Detailed Visualizations", key="view_viz"):
+    if st.button("View Detailed Visualizations", use_container_width=True):
         switch_page("Visualizations")
