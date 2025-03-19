@@ -156,16 +156,50 @@ with col_nav3:
     if st.button("Visualizations →", use_container_width=True):
         switch_page("Visualizations")
 
-# Personal Details & BMI Input Section
+ # Personal Details & BMI Input Section
 with st.container():
+    # Add the wrapper div class for styling
+    st.markdown('<div class="personal-details-container">', unsafe_allow_html=True)
+
     st.header("Enter Your Personal Details")
+
     col1, col2 = st.columns(2)
+
     with col1:
-        weight = st.number_input("Weight (kg)", min_value=00.0, max_value=200.0, value=st.session_state.get('weight', 00.0))
-        height = st.number_input("Height (cm)", min_value=00.0, max_value=250.0, value=st.session_state.get('height', 00.0))
+        st.markdown('<h4>Weight (kg)</h4>', unsafe_allow_html=True)
+        weight = st.number_input(
+            " ",  # Empty label since h4 above acts as the label
+            min_value=0.0, 
+            max_value=200.0, 
+            value=st.session_state.get('weight', 0.0)
+        )
+
+        st.markdown('<h4>Height (cm)</h4>', unsafe_allow_html=True)
+        height = st.number_input(
+            " ",
+            min_value=0.0, 
+            max_value=250.0, 
+            value=st.session_state.get('height', 0.0)
+        )
+
     with col2:
-        gender = st.selectbox("Gender", options=["Male", "Female", "Prefer not to say"], index=st.session_state.get('gender_index', 0))
-        age = st.number_input("Age", min_value=00, max_value=120, value=st.session_state.get('age', 00))
+        st.markdown('<h4>Gender</h4>', unsafe_allow_html=True)
+        gender = st.selectbox(
+            " ",
+            options=["Male", "Female", "Prefer not to say"],
+            index=st.session_state.get('gender_index', 0)
+        )
+
+        st.markdown('<h4>Age</h4>', unsafe_allow_html=True)
+        age = st.number_input(
+            " ",
+            min_value=0, 
+            max_value=120, 
+            value=st.session_state.get('age', 0)
+        )
+
+    # Close the wrapper div
+    st.markdown('</div>', unsafe_allow_html=True)
     
     # Store input values in session state
     st.session_state.weight = weight
