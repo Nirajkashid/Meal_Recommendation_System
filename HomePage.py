@@ -11,12 +11,6 @@ with open('style1.css') as f:
     css = f.read()
 st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
 
-# Dark Mode Toggle (persisted)
-if 'dark_mode' not in st.session_state:
-    st.session_state.dark_mode = False
-
-dark_mode_toggle = st.sidebar.toggle("🌙 Dark Mode", value=st.session_state.dark_mode)
-st.session_state.dark_mode = dark_mode_toggle
 
 # Optional: Reset session button
 if st.sidebar.button("🔄 Reset Session"):
