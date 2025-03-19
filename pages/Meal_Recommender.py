@@ -72,29 +72,6 @@ def calculate_bmi(weight, height):
         return 0  # or return None if you prefer to handle differently
     return weight / (height / 100) ** 2
 
-# Streamlit UI with the styled elements
-st.title("BMI Calculator")
-
-with st.container():
-    col1, col2 = st.columns(2)
-    with col1:
-        weight = st.number_input("Weight (kg)", min_value=30.0, max_value=300.0, value=70.0)
-    with col2:
-        height = st.number_input("Height (cm)", min_value=100.0, max_value=250.0, value=170.0)
-
-bmi = calculate_bmi(weight, height)
-
-# Styled BMI display
-st.markdown(f'<div class="bmi-result">Your BMI: {bmi:.1f}</div>', unsafe_allow_html=True)
-
-# Styled recommendation messages
-if bmi < 18.5:
-    st.markdown('<div class="status-message underweight">Underweight - Recommending high-calorie meals</div>', unsafe_allow_html=True)
-elif 18.5 <= bmi < 25:
-    st.markdown('<div class="status-message normal-weight">Normal Weight - Recommending balanced meals</div>', unsafe_allow_html=True)
-else:
-    st.markdown('<div class="status-message overweight">Overweight/Obesity - Recommending low-calorie meals</div>', unsafe_allow_html=True)
-
 
 # Content-Based Filtering with dynamic recommendation count
 def content_based_recommendations(bmi, df):
@@ -223,8 +200,12 @@ with st.container():
 
     # Close the wrapper div
     st.markdown('</div>', unsafe_allow_html=True)
-    
-    # Store input values in session state
+
+    # Styled BMI display
+st.markdown(f'<div class="bmi-result">Your BMI: {bmi:.1f}</div>', unsafe_allow_html=True)
+
+
+  # Store input values in session state
     st.session_state.weight = weight
     st.session_state.height = height
     st.session_state.gender_index = ["Male", "Female", "Prefer not to say"].index(gender)
@@ -239,6 +220,17 @@ with st.container():
         st.success("Normal Weight - Recommending balanced meals")
     else:
         st.error("Overweight/Obesity - Recommending low-calorie meals")
+
+# Styled BMI display
+st.markdown(f'<div class="bmi-result">Your BMI: {bmi:.1f}</div>', unsafe_allow_html=True)
+
+# Styled recommendation messages
+if bmi < 18.5:
+    st.markdown('<div class="status-message underweight">Underweight - Recommending high-calorie meals</div>', unsafe_allow_html=True)
+elif 18.5 <= bmi < 25:
+    st.markdown('<div class="status-message normal-weight">Normal Weight - Recommending balanced meals</div>', unsafe_allow_html=True)
+else:
+    st.markdown('<div class="status-message overweight">Overweight/Obesity - Recommending low-calorie meals</div>', unsafe_allow_html=True)
 
 # Recommendations and Visualizations
 if st.button("Generate Recommendations", key="gen_rec"):
