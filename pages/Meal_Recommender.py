@@ -124,14 +124,18 @@ def collaborative_filtering(user_preferences, content_based_recs, num_collab_rec
 
     return df.loc[top_collab_indices]
 
+def calculate_bmi(weight, height):
+    if height == 0:
+        return 0  # or you might want to display an error message or prompt the user to enter a valid height
+    return weight / ((height/100) ** 2)
 # User Input
 st.title("Personalized Meal Recommendations")
 
 st.header("Enter Your Personal Details")
 col1, col2 = st.columns(2)
 with col1:
-    weight = st.number_input("Weight (kg)", min_value=1.0, max_value=200.0, value=st.session_state.get('weight', 70.0))
-    height = st.number_input("Height (cm)", min_value=1.0, max_value=250.0, value=st.session_state.get('height', 170.0))
+    weight = st.number_input("Weight (kg)", min_value=0.0, max_value=200.0, value=st.session_state.get('weight', 00.0))
+    height = st.number_input("Height (cm)", min_value=0.0, max_value=250.0, value=st.session_state.get('height', 00.0))
 with col2:
     gender = st.selectbox("Gender", options=["Male", "Female", "Prefer not to say"], index=st.session_state.get('gender_index', 0))
     age = st.number_input("Age", min_value=1, max_value=120, value=st.session_state.get('age', 25))
