@@ -5,6 +5,9 @@ import plotly.express as px
 from sklearn.metrics.pairwise import cosine_similarity
 import io
 import random
+from streamlit_extras.switch_page_button import switch_page
+
+st.set_page_config(page_title="Meal Recommender", layout="wide")
 
 # Load dataset from provided CSV content                                                                                                           
 CSV_CONTENT = """item id,item,servesize,calories,protien,totalfat,satfat,transfat,cholestrol,carbs,sugar,addedsugar,sodium,menu,Ratings
