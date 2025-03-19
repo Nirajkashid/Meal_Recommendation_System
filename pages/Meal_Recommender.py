@@ -159,8 +159,8 @@ with st.container():
     st.header("Enter Your Personal Details")
     col1, col2 = st.columns(2)
     with col1:
-        weight = st.number_input("Weight (kg)", min_value=00.0, max_value=200.0, value=00.0)
-        height = st.number_input("Height (cm)", min_value=00.0, max_value=250.0, value=00.0)
+        weight = st.number_input("Weight (kg)", min_value=1.0, max_value=200.0, value=00.0)
+        height = st.number_input("Height (cm)", min_value=1.0, max_value=250.0, value=00.0)
     with col2:
         gender = st.selectbox("Gender", options=["Male", "Female", "Prefer not to say"])
         age = st.number_input("Age", min_value=00, max_value=120, value=00)
