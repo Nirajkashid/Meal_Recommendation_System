@@ -136,9 +136,6 @@ def collaborative_filtering(user_preferences, content_based_recs):
     
     return df.loc[top_collab_indices]
 
-# Main Page Layout
-st.set_page_config(page_title="Meal Recommender", layout="wide")
-
 # Load CSS
 with open('style1.css') as f:
     css = f.read()
