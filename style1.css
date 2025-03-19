@@ -1,11 +1,11 @@
 .stApp {
-    background-color: #f5f5f5;
+    background-color: #fafafa; /* Very light grey for a softer background */
     font-family: 'Arial', sans-serif;
     color: #333333; /* Default text color */
 }
 
 .meal-card {
-    background: #e0e0e0; /* Light grey background instead of white */
+    background: #ffffff; /* White background for cards to stand out */
     color: #212121; /* Dark text for readability */
     border-radius: 10px;
     padding: 1.5rem;
@@ -19,11 +19,11 @@
 }
 
 .meal-card.collab {
-    border-left: 4px solid #4CAF50;
+    border-left: 4px solid #4CAF50; /* Green border for collaborative recommendations */
 }
 
 .stButton>button {
-    background-color: #FF4B4B;
+    background-color: #FF4B4B; /* Red button for primary actions */
     color: white;
     border-radius: 25px;
     padding: 0.5rem 2rem;
@@ -33,15 +33,15 @@
 }
 
 .stButton>button:hover {
-    background-color: #FF3333;
+    background-color: #FF3333; /* Darker red on hover */
 }
 
 h1, h2, h3 {
-    color: #2C3E50;
+    color: #2C3E50; /* Dark blue for headings */
 }
 
 .feature-box {
-    background-color: #e8e8e8; /* Subtle grey */
+    background-color: #ffffff; /* White background for feature boxes */
     color: #212121;
     border-radius: 10px;
     padding: 1.5rem;
@@ -50,7 +50,7 @@ h1, h2, h3 {
 }
 
 .feature-box h4 {
-    color: #FF4B4B;
+    color: #FF4B4B; /* Red for subheadings */
     margin-bottom: 1rem;
 }
 
@@ -63,37 +63,37 @@ h1, h2, h3 {
 }
 
 .viz-description {
-    background-color: #e8e8e8; /* Neutral tone */
+    background-color: #ffffff; /* White background for visualization descriptions */
     color: #333333;
     border-radius: 10px;
     padding: 1.5rem;
     margin: 1rem 0;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    border-left: 4px solid #3498DB;
+    border-left: 4px solid #3498DB; /* Blue border for visualization descriptions */
 }
 
 .viz-info {
-    background-color: #e0e0e0;
+    background-color: #ffffff; /* White background for visualization info */
     color: #333333;
     border-radius: 10px;
     padding: 1.5rem;
     margin: 1rem 0;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    border-left: 4px solid #9B59B6;
+    border-left: 4px solid #9B59B6; /* Purple border for visualization info */
 }
 
 .cta-box {
-    background-color: #f0f0f0; /* Very soft grey */
+    background-color: #f0f0f0; /* Very soft grey for call-to-action boxes */
     color: #212121;
     border-radius: 10px;
     padding: 1.5rem;
     margin: 2rem 0;
     text-align: center;
-    border: 2px dashed #FF4B4B;
+    border: 2px dashed #FF4B4B; /* Red dashed border for call-to-action boxes */
 }
 
 .insight-box {
-    background-color: #e0e0e0;
+    background-color: #ffffff; /* White background for insight boxes */
     color: #333333;
     border-radius: 10px;
     padding: 1.5rem;
@@ -102,15 +102,15 @@ h1, h2, h3 {
 }
 
 .insight-box.underweight {
-    border-left: 4px solid #FF9800;
+    border-left: 4px solid #FF9800; /* Orange border for underweight insights */
 }
 
 .insight-box.normal {
-    border-left: 4px solid #4CAF50;
+    border-left: 4px solid #4CAF50; /* Green border for normal weight insights */
 }
 
 .insight-box.overweight {
-    border-left: 4px solid #F44336;
+    border-left: 4px solid #F44336; /* Red border for overweight insights */
 }
 
 /* Tabs Styling */
@@ -121,7 +121,7 @@ h1, h2, h3 {
 .stTabs [data-baseweb="tab"] {
     height: 3rem;
     white-space: pre-wrap;
-    background-color: #dcdcdc; /* Slightly darker grey */
+    background-color: #e0e0e0; /* Light grey for tabs */
     color: #333333;
     border-radius: 4px 4px 0 0;
     padding: 0.5rem 1rem;
@@ -129,13 +129,13 @@ h1, h2, h3 {
 }
 
 .stTabs [aria-selected="true"] {
-    background-color: #FF4B4B;
+    background-color: #FF4B4B; /* Red for selected tab */
     color: white;
 }
 
 /* Input Fields */
 input[type="number"], select {
-    background-color: #f0f0f0; /* Light grey input fields */
+    background-color: #f0f0f0; /* Light grey for input fields */
     color: #333333;
     border-radius: 5px;
     padding: 0.5rem;
