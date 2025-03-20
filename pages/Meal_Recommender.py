@@ -180,6 +180,15 @@ h3 {
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+    <style>
+    /* Target the label of Streamlit widgets */
+    [data-testid="stWidgetLabel"] {
+        color: black !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 # Personal Details & BMI Input Section
 with st.container():
     st.header("Enter Your Personal Details")
@@ -187,13 +196,13 @@ with st.container():
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        weight = st.number_input('Weight (kg):', min_value=20.0, step=0.1, format="%.2f", value=st.session_state.get('weight', 70.0))
+        weight = st.number_input('Weight (kg):⚖️', min_value=20.0, step=0.1, format="%.2f", value=st.session_state.get('weight', 70.0))
     with col2:
-        height = st.number_input('Height (cm):', min_value=100.0, step=0.1, format="%.2f", value=st.session_state.get('height', 170.0))
+        height = st.number_input('Height (cm):📏', min_value=100.0, step=0.1, format="%.2f", value=st.session_state.get('height', 170.0))
     with col3:
-        age = st.number_input('Age (years):', min_value=0, step=1, value=st.session_state.get('age', 25))
+        age = st.number_input('Age (years):🎂', min_value=0, step=1, value=st.session_state.get('age', 25))
     with col4:
-        gender = st.selectbox("Gender", options=["Male", "Female", "Prefer not to say"], index=st.session_state.get('gender_index', 0))
+        gender = st.selectbox("Gender:🚻", options=["Male", "Female", "Prefer not to say"], index=st.session_state.get('gender_index', 0))
     
     # Store input values in session state
     st.session_state.weight = weight
