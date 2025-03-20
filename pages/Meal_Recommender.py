@@ -158,108 +158,44 @@ with col_nav3:
 
 st.markdown("""
 <style>
-/* Main container styling */
-.main-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    background-color: #f9f9f9;
+/* Headings for clarity */
+h3 {
+    font-size: 1.8rem;
+    font-weight: bold;
 }
 
-/* BMI result styling */
+/* BMI result box */
 .bmi-result {
-    font-size: 32px;
-    font-weight: 700;
+    background-color: #ffffff;
+    color: #FF4B4B;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+    font-size: 2rem;
+    font-weight: bold;
     text-align: center;
-    margin: 20px 0;
-    padding: 15px;
-    border-radius: 8px;
-    background-color: #f0f0f0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-/* Status message styling */
-.status-message {
-    text-align: center;
-    padding: 15px;
-    margin: 15px 0;
-    border-radius: 8px;
-    font-size: 18px;
-    font-weight: 500;
-}
-
-/* Specific status styles */
-.underweight {
-    background-color: #fff3cd;
-    border-left: 5px solid #ffc107;
-    color: #856404;
-}
-
-.normal-weight {
-    background-color: #d4edda;
-    border-left: 5px solid #28a745;
-    color: #155724;
-}
-
-.overweight {
-    background-color: #f8d7da;
-    border-left: 5px solid #dc3545;
-    color: #721c24;
-}
-
-/* Input field styling */
-.stTextInput > div > div > input {
-    border-radius: 5px;
-    border: 1px solid #ddd;
-    padding: 10px;
-    font-size: 16px;
-}
-
-/* Button styling */
-.stButton > button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 500;
-    transition: background-color 0.3s;
-}
-
-.stButton > button:hover {
-    background-color: #45a049;
-}
-
-/* Responsive styling */
-@media (max-width: 600px) {
-    .main-container {
-        padding: 10px;
-    }
-    
-    .bmi-result {
-        font-size: 28px;
-    }
-    
-    .status-message {
-        font-size: 16px;
-    }
-}
 </style>
 """, unsafe_allow_html=True)
 
 # Personal Details & BMI Input Section
 with st.container():
     st.header("Enter Your Personal Details")
-    col1, col2 = st.columns(2)
-    with col1:
-        weight = st.number_input("Weight (kg)", min_value=00.0, max_value=200.0, value=st.session_state.get('weight', 00.0))
-        height = st.number_input("Height (cm)", min_value=00.0, max_value=250.0, value=st.session_state.get('height', 00.0))
-    with col2:
-        gender = st.selectbox("Gender", options=["Male", "Female", "Prefer not to say"], index=st.session_state.get('gender_index', 0))
-        age = st.number_input("Age", min_value=00, max_value=120, value=st.session_state.get('age', 00))
+   col1, col2, col3 = st.columns(3)
+
+with col1:
+    weight = st.number_input('Weight (kg):', min_value=20.0, step=0.1, format="%.2f", value=st.session_state.get('weight', .......))
+
+with col2:
+    height = st.number_input('Height (cm):', min_value=100.0, step=0.1, format="%.2f", value=st.session_state.get('height', .......))
+
+with col3:
+    age = st.number_input('Age (years):', min_value=0, step=1, value=st.session_state.get('age', 00))
+    
+with col4:
+    gender = st.selectbox("Gender", options=["Male", "Female", "Prefer not to say"], index=st.session_state.get('gender_index', 0))
     
     # Store input values in session state
     st.session_state.weight = weight
