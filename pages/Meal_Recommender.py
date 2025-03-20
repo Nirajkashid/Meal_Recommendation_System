@@ -166,25 +166,26 @@ with st.container():
     with col2:
         gender = st.selectbox("Gender", options=["Male", "Female", "Prefer not to say"], index=st.session_state.get('gender_index', 0))
         age = st.number_input("Age", min_value=00, max_value=120, value=st.session_state.get('age', 00))
-  
-
-  # Store input values in session state
+    
+    # Store input values in session state
     st.session_state.weight = weight
     st.session_state.height = height
     st.session_state.gender_index = ["Male", "Female", "Prefer not to say"].index(gender)
     st.session_state.age = age
     
-if bmi == 0:
-    st.warning("Please enter a valid height greater than 0 to calculate BMI.")
-else:
-    st.markdown(f'<div class="bmi-output">Your BMI: {bmi:.1f}</div>', unsafe_allow_html=True)
-
-    if bmi < 18.5:
-        st.markdown('<div class="bmi-output bmi-warning">Underweight - Recommending high-calorie meals</div>', unsafe_allow_html=True)
-    elif 18.5 <= bmi < 25:
-        st.markdown('<div class="bmi-output bmi-success">Normal Weight - Recommending balanced meals</div>', unsafe_allow_html=True)
+    bmi = calculate_bmi(weight, height)
+    
+    # Move BMI display and checks INSIDE the container
+    if height == 0:
+        st.warning("Please enter a valid height greater than 0 to calculate BMI")
     else:
-        st.markdown('<div class="bmi-output bmi-error">Overweight/Obesity - Recommending low-calorie meals</div>', unsafe_allow_html=True)
+        st.subheader(f"Your BMI: {bmi:.1f}")
+        if bmi < 18.5:
+            st.warning("Underweight - Recommending high-calorie meals")
+        elif 18.5 <= bmi < 25:
+            st.success("Normal Weight - Recommending balanced meals")
+        else:
+            st.error("Overweight/Obesity - Recommending low-calorie meals")
 
 # Recommendations and Visualizations
 if st.button("Generate Recommendations", key="gen_rec"):
