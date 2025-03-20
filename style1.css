@@ -265,3 +265,22 @@ input[type="number"], select {
         font-size: 16px;
     }
 }
+
+/* Headings for clarity */
+h3 {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+/* BMI result box */
+.bmi-result {
+    background-color: #ffffff;
+    color: #FF4B4B;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
