@@ -87,7 +87,7 @@ def content_based_recommendations(bmi, df):
         user_profile = [0.1, 0.5, 0.2, 0.2]  # Higher protein for underweight
         filtered = df[df['calories'] >= df['calories'].mean()]
         recommendation_type = "High-Calorie Recommendations for Weight Gain"
-        num_recommendations = 5  # More recommendations for underweight
+        num_recommendations = 6  # More recommendations for underweight
     elif 18.5 <= bmi < 25:
         user_profile = [0.25, 0.25, 0.25, 0.25]  # Balanced for normal weight
         filtered = df
@@ -97,7 +97,7 @@ def content_based_recommendations(bmi, df):
         user_profile = [0.5, 0.3, 0.1, 0.1]  # Low calories, higher protein for overweight
         filtered = df[df['calories'] <= df['calories'].mean()]
         recommendation_type = "Low-Calorie Recommendations for Weight Management"
-        num_recommendations = 3  # Fewer recommendations for overweight/obese
+        num_recommendations = 2  # Fewer recommendations for overweight/obese
     
     # Calculate cosine similarity between user profile and meal features
     similarities = cosine_similarity([user_profile], features)
