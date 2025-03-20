@@ -202,20 +202,23 @@ with col4:
     st.session_state.height = height
     st.session_state.gender_index = ["Male", "Female", "Prefer not to say"].index(gender)
     st.session_state.age = age
-    
-    bmi = calculate_bmi(weight, height)
+
+bmi = calculate_bmi(weight, height)
+    # Styled BMI display
+st.markdown(f'<div class="bmi-result">Your BMI is: {bmi:.2f}</div>', unsafe_allow_html=True)
     
     # Move BMI display and checks INSIDE the container
     if height == 0:
         st.warning("Please enter a valid height greater than 0 to calculate BMI")
     else:
         st.subheader(f"Your BMI: {bmi:.1f}")
-        if bmi < 18.5:
-            st.warning("Underweight - Recommending high-calorie meals")
-        elif 18.5 <= bmi < 25:
-            st.success("Normal Weight - Recommending balanced meals")
-        else:
-            st.error("Overweight/Obesity - Recommending low-calorie meals")
+        # Styled recommendation messages
+if bmi < 18.5:
+    st.markdown('<div class="status-message underweight">Underweight - Recommending high-calorie meals</div>', unsafe_allow_html=True)
+elif 18.5 <= bmi < 25:
+    st.markdown('<div class="status-message normal-weight">Normal Weight - Recommending balanced meals</div>', unsafe_allow_html=True)
+else:
+    st.markdown('<div class="status-message overweight">Overweight/Obesity - Recommending low-calorie meals</div>', unsafe_allow_html=True)
 
 # Recommendations and Visualizations
 if st.button("Generate Recommendations", key="gen_rec"):
