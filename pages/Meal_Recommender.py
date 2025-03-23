@@ -278,20 +278,44 @@ if st.button("Generate Meal Recommendations 🍽️"):
 if 'content_recs' in st.session_state:
     st.header(st.session_state.rec_type)
     
-    # Content-based Recommendations in Cards
+ # Content-based Recommendations in Cards
+if st.session_state.content_recs is not None and not st.session_state.content_recs.empty:
+    
+    st.subheader("🍱 Content-Based Recommendations")
+    
     cols = st.columns(3)
+
     for idx, (_, row) in enumerate(st.session_state.content_recs.iterrows()):
         with cols[idx % 3]:
             st.markdown(f"""
-            <div class="meal-card">
-                <h4>{row['item']}</h4>
-                <p>Calories: {row['calories']:.0f}</p>
-                <p>Protein: {row['protien']}g</p>
-                <p>Carbs: {row['carbs']}g</p>
-                <p>Fat: {row['totalfat']}g</p>
-                <p>Rating: {row['Ratings']}/20</p>
-            </div>
+                <div class="meal-card">
+                    <h4>{row['item']}</h4>
+                    <p>Calories: {row['calories']:.0f}</p>
+                    <p>Protein: {row['protien']}g</p>
+                    <p>Carbs: {row['carbs']}g</p>
+                    <p>Fat: {row['totalfat']}g</p>
+                    <p>Rating: {row['Ratings']}/20</p>
+                </div>
             """, unsafe_allow_html=True)
+
+else:
+    st.warning("⚠️ No recommendations found. Please generate your meal recommendations first!")
+
+    # Optional: redirect or navigation button
+    from streamlit_extras.switch_page_button import switch_page
+    if st.button("🔄 Go to Meal Recommender"):
+        switch_page("Meal_Recommender")
+        
+if st.button("Generate Recommendations"):
+    content_recs, recommendation_type, num_recs = content_based_recommendations(bmi, df)
+
+    # Save these in session state for other pages or tabs to use
+    st.session_state.content_recs = content_recs
+    st.session_state.rec_type = recommendation_type
+
+    collaborative_recs = collaborative_filtering(user_preferences, content_recs, num_recs, bmi)
+    st.session_state.collaborative_recs = collaborative_recs
+
     
     # Collaborative Recommendations
     st.header("You Might Also Like")
