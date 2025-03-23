@@ -25,7 +25,26 @@ if 'collaborative_recs' not in st.session_state:
 if 'bmi' not in st.session_state:
     st.session_state.bmi = None
     
+# Display Content-Based Recommendations
+if st.session_state.content_recs is not None and not st.session_state.content_recs.empty:
+    st.header(st.session_state.rec_type)
 
+    cols = st.columns(3)
+
+    for idx, (_, row) in enumerate(st.session_state.content_recs.iterrows()):
+        with cols[idx % 3]:
+            st.markdown(f"""
+                <div class="meal-card">
+                    <h4>{row['item']}</h4>
+                    <p>Calories: {row['calories']}</p>
+                    <p>Protein: {row['protien']}</p>
+                    <p>Carbs: {row['carbs']}</p>
+                </div>
+            """, unsafe_allow_html=True)
+else:
+    st.warning("⚠️ No recommendations to display. Please generate them first!")
+    if st.button("Go to Meal Recommender"):
+        switch_page("Meal_Recommender")
 
 
 # Load dataset from provided CSV content
