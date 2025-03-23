@@ -1,168 +1,149 @@
-# Add this CSS code in your Streamlit app where you have the st.markdown() call
-st.markdown(f"""
-<style>
-:root {{
-    --button-bg: #FF4B4B;
-    --secondary-text-color: #666;
-}}
-
-.stApp {{
-    background-color: #fafafa;
+.stApp {
+    background-color: #1a1a1a; /* Dark background */
     font-family: 'Arial', sans-serif;
-    color: #333333;
-}}
+    color: #ffffff; /* Light text */
+    position: relative;
+}
 
-/* Meal Cards */
-.meal-card {{
+/* Subtle diagonal pattern overlay */
+.stApp::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.05;
+    z-index: 0;
+    background-image: 
+        linear-gradient(45deg, #2c2c2c 25%, transparent 25%),
+        linear-gradient(-45deg, #2c2c2c 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #2c2c2c 75%),
+        linear-gradient(-45deg, transparent 75%, #2c2c2c 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+
+/* Meal Cards (maintain original style) */
+.meal-card {
     background-color: #2c2c2c;
     color: #ffffff;
     border-radius: 10px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s;
-}}
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid #3d3d3d;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-.meal-card:hover {{
-    transform: translateY(-2px);
-}}
+.meal-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+}
 
-.meal-card.collab {{
+.meal-card.collab {
     border-left: 4px solid #4CAF50;
-}}
+}
 
-/* Buttons */
-.stButton>button {{
-    background-color: #FF4B4B;
-    color: white;
-    border-radius: 25px;
-    padding: 0.5rem 2rem;
-    border: none;
-    font-size: 1.1rem;
-    transition: background-color 0.2s;
-}}
+/* Dark theme adjustments */
+h1, h2, h3 {
+    color: #ffffff;
+    position: relative;
+    z-index: 1;
+}
 
-.stButton>button:hover {{
-    background-color: #FF3333;
-}}
-
-.download-button button {{
-    background-color: #4CAF50;
-    color: white;
-    border-radius: 20px;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}}
-
-.download-button button:hover {{
-    background-color: #45A049;
-    transform: scale(1.05);
-}}
-
-/* Typography */
-h1, h2, h3 {{
-    color: #2C3E50;
-}}
-
-h3 {{
-    font-size: 1.8rem;
-    font-weight: bold;
-}}
-
-/* BMI Components */
-.bmi-result {{
-    background-color: #ffffff;
-    color: #FF4B4B;
-    border-radius: 10px;
-    padding: 1rem;
-    margin-top: 1rem;
-    font-size: 2rem;
-    font-weight: bold;
-    text-align: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}}
-
-.status-message {{
-    text-align: center;
-    padding: 15px;
-    margin: 15px 0;
-    border-radius: 8px;
-    font-size: 18px;
-    font-weight: 500;
-}}
-
-.underweight {{
-    background-color: #fff3cd;
-    border-left: 5px solid #ffc107;
-    color: #856404;
-}}
-
-.normal-weight {{
-    background-color: #d4edda;
-    border-left: 5px solid #28a745;
-    color: #155724;
-}}
-
-.overweight {{
-    background-color: #f8d7da;
-    border-left: 5px solid #dc3545;
-    color: #721c24;
-}}
+.feature-box, .viz-description, .viz-info, .insight-box {
+    background-color: #2c2c2c;
+    color: #ffffff;
+    border: 1px solid #3d3d3d;
+    position: relative;
+    z-index: 1;
+}
 
 /* Input Fields */
-[data-testid="stWidgetLabel"] {{
-    color: black !important;
-}}
+input[type="number"], select {
+    background-color: #333333;
+    color: #ffffff;
+    border: 1px solid #4d4d4d;
+}
 
-input[type="number"], select {{
-    background-color: #f0f0f0;
-    color: #333333;
-    border-radius: 5px;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-}}
+.stTextInput > div > div > input {
+    background-color: #333333 !important;
+    color: #ffffff !important;
+}
 
-.stTextInput > div > div > input {{
-    border-radius: 5px;
-    border: 1px solid #ddd;
-    padding: 10px;
-    font-size: 16px;
-}}
+/* BMI Components */
+.bmi-result {
+    background-color: #2c2c2c;
+    color: #FF4B4B;
+    border: 1px solid #3d3d3d;
+}
 
-/* Layout Components */
-.main-container {{
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    background-color: #f9f9f9;
-}}
+.status-message {
+    background-color: #333333 !important;
+}
 
-.feature-box {{
-    background-color: #ffffff;
-    border-radius: 10px;
-    padding: 1.5rem;
-    margin: 1.5rem 0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}}
+/* Tabs Styling */
+.stTabs [data-baseweb="tab"] {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+.stTabs [aria-selected="true"] {
+    background-color: #FF4B4B;
+}
+
+/* Buttons */
+.stButton>button {
+    background-color: #FF4B4B;
+    color: white;
+    border: 1px solid #ff6666;
+}
+
+.download-button button {
+    background-color: #4CAF50;
+    border: 1px solid #66bb6a;
+}
+
+/* Widget Labels */
+[data-testid="stWidgetLabel"] {
+    color: #ffffff !important;
+}
+
+/* Pattern overlay adjustment for content */
+.stContainer, .stButton, .stNumberInput, .stSelectbox {
+    position: relative;
+    z-index: 1;
+}
 
 /* Responsive Design */
-@media (max-width: 600px) {{
-    .main-container {{
-        padding: 10px;
-    }}
+@media (max-width: 600px) {
+    .meal-card {
+        margin-bottom: 1rem;
+        padding: 1rem;
+    }
     
-    .bmi-result {{
-        font-size: 28px;
-    }}
-    
-    .status-message {{
-        font-size: 16px;
-    }}
-}}
-</style>
+    .stApp::before {
+        background-size: 15px 15px;
+    }
+}
+
+/* Glow effect for cards */
+.meal-card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(255, 75, 75, 0.2);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.meal-card:hover::after {
+    opacity: 1;
+}
