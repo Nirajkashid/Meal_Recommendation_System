@@ -2,12 +2,14 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
+import plotly.graph_objects as go
 from sklearn.metrics.pairwise import cosine_similarity
 import io
 import random
 from streamlit_extras.switch_page_button import switch_page
+from fpdf import FPDF
 
-st.set_page_config(page_title="Meal Recommender", layout="wide")
+st.set_page_config(page_title="Dynamic Meal Recommender", layout="wide")
 
 # Load dataset from provided CSV content
 CSV_CONTENT = """item id,item,servesize,calories,protien,totalfat,satfat,transfat,cholestrol,carbs,sugar,addedsugar,sodium,menu,Ratings
@@ -44,13 +46,19 @@ def load_data():
     df = pd.read_csv(io.StringIO(CSV_CONTENT), on_bad_lines='skip', delimiter=',')
     
     # Data preprocessing
-    df['calories'] = df['calories'].astype(float)
-    df['protien'] = df['protien'].astype(float)
-    df['totalfat'] = df['totalfat'].astype(float)
-    df['carbs'] = df['carbs'].astype(float)
+    numeric_cols = ['calories', 'protien', 'totalfat', 'carbs']
+    for col in numeric_cols:
+        df[col] = df[col].astype(float)
+    
     df['category'] = df['menu'].apply(lambda x: 'Healthy' if x in ['regular', 'breakfast'] else 'Treat')
     
-    # Generate synthetic user preferences for collaborative filtering
+    return df
+
+df = load_data()
+
+# Generate synthetic user preferences for collaborative filtering
+@st.cache_data
+def generate_user_preferences():
     np.random.seed(42)
     num_users = 100
     user_preferences = pd.DataFrame(index=range(num_users), columns=df.index)
@@ -61,91 +69,136 @@ def load_data():
             user_preferences.loc[user, meal] = np.random.randint(1, 6)
     
     # Fill NaN with 0 (not rated)
-    user_preferences = user_preferences.fillna(0)
-    
-    return df, user_preferences
+    return user_preferences.fillna(0)
 
-df, user_preferences = load_data()
+user_preferences = generate_user_preferences()
 
 def calculate_bmi(weight, height):
     if height == 0:
-        return 0  # or return None if you prefer to handle differently
-    return weight / (height / 100) ** 2
-
+        return 0
+    return weight / ((height / 100) ** 2)
 
 # Content-Based Filtering with dynamic recommendation count
 def content_based_recommendations(bmi, df):
-    # Normalize nutritional values for content-based filtering
     df_norm = df.copy()
+    # Normalize features
     for feature in ['calories', 'protien', 'totalfat', 'carbs']:
-        df_norm[feature] = (df_norm[feature] - df_norm[feature].min()) / (df_norm[feature].max() - df_norm[feature].min())
+        df_norm[feature] = (df_norm[feature] - df_norm[feature].min()) / \
+                          (df_norm[feature].max() - df_norm[feature].min())
     
-    features = df_norm[['calories', 'protien', 'totalfat', 'carbs']].values
+    # Dynamic weight calculation based on BMI
+    calorie_weight = np.clip(1 - (bmi / 40), 0, 1)
+    protein_weight = np.clip((bmi / 40), 0, 1)
+    fat_weight = np.clip(1 - abs(22 - bmi) / 40, 0, 1)
+    carbs_weight = np.clip(1 - (bmi / 40), 0, 1)
     
-    # Define user profile and set dynamic recommendation count based on BMI
+    # Normalize weights to sum to 1
+    weights = np.array([calorie_weight, protein_weight, fat_weight, carbs_weight])
+    user_profile = weights / weights.sum()
+    
+    # Filter based on BMI
+    calorie_mean = df['calories'].mean()
+    calorie_std = df['calories'].std()
+    
     if bmi < 18.5:
-        user_profile = [0.1, 0.5, 0.2, 0.2]  # Higher protein for underweight
-        filtered = df[df['calories'] >= df['calories'].mean()]
-        recommendation_type = "High-Calorie Recommendations for Weight Gain"
-        num_recommendations = 6  # More recommendations for underweight
+        filtered = df[df['calories'] >= calorie_mean + (bmi/18.5)*calorie_std]
+        recommendation_type = f"High-Calorie Recommendations (BMI {bmi:.1f})"
+        num_rec = 6
     elif 18.5 <= bmi < 25:
-        user_profile = [0.25, 0.25, 0.25, 0.25]  # Balanced for normal weight
-        filtered = df
-        recommendation_type = "Balanced Meal Recommendations"
-        num_recommendations = 4  # Medium number for normal weight
+        filtered = df[(df['calories'] >= calorie_mean - ((bmi-18.5)/6.5)*calorie_std) &
+                     (df['calories'] <= calorie_mean + ((25-bmi)/5)*calorie_std)]
+        recommendation_type = f"Balanced Recommendations (BMI {bmi:.1f})"
+        num_rec = 4
     else:
-        user_profile = [0.5, 0.3, 0.1, 0.1]  # Low calories, higher protein for overweight
-        filtered = df[df['calories'] <= df['calories'].mean()]
-        recommendation_type = "Low-Calorie Recommendations for Weight Management"
-        num_recommendations = 2  # Fewer recommendations for overweight/obese
+        filtered = df[df['calories'] <= calorie_mean - ((bmi-25)/15)*calorie_std]
+        recommendation_type = f"Low-Calorie Recommendations (BMI {bmi:.1f})"
+        num_rec = 3
     
-    # Calculate cosine similarity between user profile and meal features
-    similarities = cosine_similarity([user_profile], features)
+    # Calculate similarities
+    similarities = cosine_similarity([user_profile], df_norm[['calories', 'protien', 'totalfat', 'carbs']].values)
+    filtered_indices = filtered.index.tolist()
+    filtered_scores = [(i, similarities[0][i]) for i in filtered_indices]
+    top_indices = [i[0] for i in sorted(filtered_scores, key=lambda x: x[1], reverse=True)[:num_rec]]
     
-    # Get similarity scores for meals in the filtered dataframe
-    indices = filtered.index.tolist()
-    similarity_scores = [(i, similarities[0][i]) for i in indices]
-    similarity_scores = sorted(similarity_scores, key=lambda x: x[1], reverse=True)
-    
-    # Select top N recommendations based on dynamic count
-    top_indices = [i[0] for i in similarity_scores[:num_recommendations]]
-    
-    return filtered.loc[top_indices], recommendation_type, num_recommendations
+    return df.loc[top_indices], recommendation_type, num_rec
 
-# Collaborative Filtering with dynamic recommendation count
-def collaborative_filtering(user_preferences, content_based_recs, num_collab_recs):
-    # Get indices of content-based recommendations
-    cb_indices = content_based_recs.index.tolist()
+# Collaborative Filtering with BMI-based noise
+def collaborative_filtering(user_preferences, content_recs, num_recs, bmi):
+    cb_indices = content_recs.index.tolist()
     
-    # Create a synthetic current user by assigning high ratings for the content-based recommendations
+    # Create synthetic current user profile
     current_user = pd.Series(0, index=user_preferences.columns)
-    current_user[cb_indices] = 5
+    current_user[cb_indices] = 5  # Boost content-based recommendations
     
-    # Calculate cosine similarity between current user and all other users
+    # Add BMI-based noise
+    bmi_noise = np.random.normal(loc=bmi/40, scale=0.1, size=len(current_user))
+    current_user = current_user + bmi_noise
+    
+    # Find similar users
     user_similarities = cosine_similarity([current_user.values], user_preferences.values)[0]
+    similar_users = user_preferences.iloc[np.argsort(user_similarities)[-10:]]  # Top 10 similar users
     
-    # Get top 10 similar users
-    similar_users = user_preferences.iloc[np.argsort(user_similarities)[-10:]]
-    
-    # Aggregate recommendations from similar users
-    collaborative_recs = pd.Series(0, index=user_preferences.columns)
+    # Aggregate recommendations
+    collab_recs = pd.Series(0, index=user_preferences.columns)
     for _, user in similar_users.iterrows():
-        collaborative_recs += user
+        collab_recs += user
     
-    # Remove meals already recommended by content-based filtering
-    collaborative_recs[cb_indices] = 0
+    # Remove content-based recs and select top N
+    collab_recs[cb_indices] = 0
+    top_indices = collab_recs.nlargest(num_recs).index.tolist()
     
-    # Get top N recommendations based on dynamic count
-    top_collab_indices = collaborative_recs.nlargest(num_collab_recs).index.tolist()
-    
-    return df.loc[top_collab_indices]
+    return df.loc[top_indices]
 
-# Load CSS
+# Visualization functions
+def show_radar_chart(selected_meals):
+    categories = ['calories', 'protien', 'totalfat', 'carbs']
+    fig = go.Figure()
+    
+    for _, meal in selected_meals.iterrows():
+        fig.add_trace(go.Scatterpolar(
+            r=[meal[c] for c in categories],
+            theta=categories,
+            fill='toself',
+            name=meal['item']
+        ))
+    
+    fig.update_layout(
+        polar=dict(radialaxis=dict(visible=True)),
+        showlegend=True,
+        height=500
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+# PDF Generation
+def generate_diet_plan_pdf(user_name, bmi, content_recs, collab_recs):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=16)
+    pdf.cell(200, 10, txt=f"{user_name}'s Diet Plan (BMI: {bmi:.1f})", ln=True, align='C')
+    
+    # Content-based recommendations
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt="Primary Recommendations:", ln=True)
+    for _, row in content_recs.iterrows():
+        pdf.multi_cell(0, 8, f"- {row['item']}: {row['calories']} cals, {row['protien']}g protein")
+    
+    # Collaborative recommendations
+    pdf.ln(10)
+    pdf.cell(200, 10, txt="Additional Suggestions:", ln=True)
+    for _, row in collab_recs.iterrows():
+        pdf.multi_cell(0, 8, f"- {row['item']}: {row['calories']} cals, {row['protien']}g protein")
+    
+    pdf_file = f"diet_plan_{user_name}.pdf"
+    pdf.output(pdf_file)
+    return pdf_file
+
+# CSS Styling
 with open('style1.css') as f:
     css = f.read()
 st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
 
-st.title("Personalized Meal Recommendations")
+# Main App
+st.title("🍔 Dynamic Meal Recommender 🥗")
 
 # Navigation Buttons
 col_nav1, col_nav2, col_nav3 = st.columns([1, 1, 1])
@@ -153,99 +206,55 @@ with col_nav1:
     if st.button("← Home", use_container_width=True):
         switch_page("HomePage")
 with col_nav3:
-    if st.button("Visualizations →", use_container_width=True):
+    if st.button("History →", use_container_width=True):
         switch_page("Visualizations")
 
-st.markdown("""
-<style>
-/* Headings for clarity */
-h3 {
-    font-size: 1.8rem;
-    font-weight: bold;
-}
-
-/* BMI result box */
-.bmi-result {
-    background-color: #ffffff;
-    color: #FF4B4B;
-    border-radius: 10px;
-    padding: 1rem;
-    margin-top: 1rem;
-    font-size: 2rem;
-    font-weight: bold;
-    text-align: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-</style>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-    <style>
-    /* Target the label of Streamlit widgets */
-    [data-testid="stWidgetLabel"] {
-        color: black !important;
-    }
-    </style>
+# Personal Details Section
+with st.container():
+    st.header("Personal Information")
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        weight = st.number_input('Weight (kg):⚖️', min_value=30.0, value=70.0)
+    with col2:
+        height = st.number_input('Height (cm):📏', min_value=100.0, value=170.0)
+    with col3:
+        age = st.number_input('Age:🎂', min_value=1, value=25)
+    with col4:
+        gender = st.selectbox("Gender:🚻", ["Male", "Female", "Other"])
+    
+    bmi = calculate_bmi(weight, height)
+    st.markdown(f"""
+    <div class="bmi-result">
+        Your BMI: {bmi:.1f}<br>
+        {["Underweight 🤢", "Normal Weight 😊", "Overweight ⚠️"][
+            (bmi >= 18.5) + (bmi >= 25)
+        ]}
+    </div>
     """, unsafe_allow_html=True)
 
-# Personal Details & BMI Input Section
-with st.container():
-    st.header("Enter Your Personal Details")
-    # Create 4 columns for all inputs
-    col1, col2, col3, col4 = st.columns(4)
+# Recommendation Generation
+if st.button("Generate Meal Recommendations 🍽️"):
+    content_recs, rec_type, num_recs = content_based_recommendations(bmi, df)
+    collab_recs = collaborative_filtering(user_preferences, content_recs, num_recs, bmi)
+    
+    # Store in session state
+    st.session_state.update({
+        'content_recs': content_recs,
+        'collab_recs': collab_recs,
+        'bmi': bmi,
+        'rec_history': st.session_state.get('rec_history', []) + [{
+            'bmi': bmi,
+            'recommendations': content_recs['item'].tolist()
+        }]
+    })
 
-    with col1:
-        weight = st.number_input('Weight (kg):⚖️', min_value=20.0, step=0.1, format="%.2f", value=st.session_state.get('weight', 70.0))
-    with col2:
-        height = st.number_input('Height (cm):📏', min_value=100.0, step=0.1, format="%.2f", value=st.session_state.get('height', 170.0))
-    with col3:
-        age = st.number_input('Age (years):🎂', min_value=0, step=1, value=st.session_state.get('age', 25))
-    with col4:
-        gender = st.selectbox("Gender:🚻", options=["Male", "Female", "Prefer not to say"], index=st.session_state.get('gender_index', 0))
+# Display Recommendations
+if 'content_recs' in st.session_state:
+    st.header(st.session_state.rec_type)
     
-    # Store input values in session state
-    st.session_state.weight = weight
-    st.session_state.height = height
-    st.session_state.gender_index = ["Male", "Female", "Prefer not to say"].index(gender)
-    st.session_state.age = age
-
-    
-    # Calculate and display BMI
-    bmi = calculate_bmi(weight, height)
-    st.markdown(f'<div class="bmi-result">Your BMI is: {bmi:.2f}</div>', unsafe_allow_html=True)
-
-    # BMI status message
-    if height == 0:
-        st.warning("Please enter a valid height greater than 0 to calculate BMI")
-    else:
-        if bmi < 18.5:
-            st.markdown('<div class="status-message underweight">Underweight - Recommending high-calorie meals</div>', unsafe_allow_html=True)
-        elif 18.5 <= bmi < 25:
-            st.markdown('<div class="status-message normal-weight">Normal Weight - Recommending balanced meals</div>', unsafe_allow_html=True)
-        else:
-            st.markdown('<div class="status-message overweight">Overweight/Obesity - Recommending low-calorie meals</div>', unsafe_allow_html=True)
-
-# Recommendations and Visualizations
-if st.button("Generate Recommendations", key="gen_rec"):
-    # Content-based filtering with dynamic recommendation count
-    content_recs, recommendation_type, num_recs = content_based_recommendations(bmi, df)
-    
-    # Collaborative filtering with the same number of recommendations
-    collaborative_recs = collaborative_filtering(user_preferences, content_recs, num_recs)
-    
-    # Save recommendations to session state for visualization page
-    st.session_state.content_recs = content_recs
-    st.session_state.collaborative_recs = collaborative_recs
-    st.session_state.recommendation_type = recommendation_type
-    st.session_state.bmi = bmi
-    
-    # Display content-based recommendations
-    st.header(recommendation_type)
-    st.markdown("**Recommended meals based on your nutritional needs:**")
-    
+    # Content-based Recommendations in Cards
     cols = st.columns(3)
-    for idx, (_, row) in enumerate(content_recs.iterrows()):
+    for idx, (_, row) in enumerate(st.session_state.content_recs.iterrows()):
         with cols[idx % 3]:
             st.markdown(f"""
             <div class="meal-card">
@@ -258,12 +267,10 @@ if st.button("Generate Recommendations", key="gen_rec"):
             </div>
             """, unsafe_allow_html=True)
     
-    # Display collaborative recommendations
+    # Collaborative Recommendations
     st.header("You Might Also Like")
-    st.markdown("**Recommended based on similar users' preferences:**")
-    
     cols = st.columns(3)
-    for idx, (_, row) in enumerate(collaborative_recs.iterrows()):
+    for idx, (_, row) in enumerate(st.session_state.collab_recs.iterrows()):
         with cols[idx % 3]:
             st.markdown(f"""
             <div class="meal-card collab">
@@ -271,21 +278,4 @@ if st.button("Generate Recommendations", key="gen_rec"):
                 <p>Calories: {row['calories']:.0f}</p>
                 <p>Protein: {row['protien']}g</p>
                 <p>Carbs: {row['carbs']}g</p>
-                <p>Fat: {row['totalfat']}g</p>
-                <p>Rating: {row['Ratings']}/20</p>
-            </div>
-            """, unsafe_allow_html=True)
-     # Download buttons for exporting recommendations
-    st.download_button(
-        label="Download Content-Based Recommendations as CSV",
-        data=content_recs.to_csv(index=False),
-        file_name="content_based_recommendations.csv",
-        mime='text/csv'
-    )
-
-    st.download_button(
-        label="Download Collaborative Recommendations as CSV",
-        data=collaborative_recs.to_csv(index=False),
-        file_name="collaborative_recommendations.csv",
-        mime='text/csv'
-    )
+                <p>Fat: {row['totalfat']}g</
