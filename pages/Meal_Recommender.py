@@ -25,10 +25,7 @@ if 'collaborative_recs' not in st.session_state:
 if 'bmi' not in st.session_state:
     st.session_state.bmi = None
     
-if st.session_state.rec_type:
-    st.header(st.session_state.rec_type)
-else:
-    st.warning("No recommendations yet. Click 'Generate Recommendations'.")
+
 
 
 # Load dataset from provided CSV content
