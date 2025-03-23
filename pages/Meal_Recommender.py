@@ -301,20 +301,21 @@ else:
     if st.button("🔄 Go to Meal Recommender"):
         switch_page("Meal_Recommender")
 
-    if st.button("Generate Recommendations"):
+if st.button("Generate Recommendations"):
 
-    # This is where you GET the recommendations
+    # Generate content-based recommendations
     content_recs, recommendation_type, num_recs = content_based_recommendations(bmi, df)
 
-    # Save them in session_state
+    # Save these in session state
     st.session_state.content_recs = content_recs
     st.session_state.rec_type = recommendation_type
-
-    collaborative_recs = collaborative_filtering(user_preferences, content_recs, num_recs, bmi)
-    st.session_state.collaborative_recs = collaborative_recs
     st.session_state.bmi = bmi
 
-    st.success("✅ Recommendations generated successfully!")
+    # Generate collaborative filtering recommendations
+    collaborative_recs = collaborative_filtering(user_preferences, content_recs, num_recs, bmi)
+    st.session_state.collaborative_recs = collaborative_recs
+
+    st.success("✅ Recommendations generated! Check below.")
 
     
     # Collaborative Recommendations
