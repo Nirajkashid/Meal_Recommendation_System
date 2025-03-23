@@ -25,17 +25,6 @@ if 'collaborative_recs' not in st.session_state:
 if 'bmi' not in st.session_state:
     st.session_state.bmi = None
     
-if st.button("Generate Recommendations", key="gen_rec"):
-    content_recs, recommendation_type, num_recs = content_based_recommendations(bmi, df)
-
-    st.session_state.content_recs = content_recs
-    st.session_state.rec_type = recommendation_type
-    st.session_state.bmi = bmi
-
-    collaborative_recs = collaborative_filtering(user_preferences, content_recs, num_recs, bmi)
-    st.session_state.collaborative_recs = collaborative_recs
-
-
 
 # Load dataset from provided CSV content
 CSV_CONTENT = """item id,item,servesize,calories,protien,totalfat,satfat,transfat,cholestrol,carbs,sugar,addedsugar,sodium,menu,Ratings
