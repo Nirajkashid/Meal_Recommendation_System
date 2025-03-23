@@ -221,7 +221,7 @@ with col_nav1:
     if st.button("← Home", use_container_width=True):
         switch_page("HomePage")
 with col_nav3:
-    if st.button("History →", use_container_width=True):
+    if st.button("Visualizations →", use_container_width=True):
         switch_page("Visualizations")
 
 # Personal Details Section
@@ -295,8 +295,7 @@ else:
     if st.button("🔄 Go to Meal Recommender"):
         switch_page("Meal_Recommender")
         
-if st.button("Generate Recommendations"):
-    content_recs, recommendation_type, num_recs = content_based_recommendations(bmi, df)
+
 
     # Save these in session state for other pages or tabs to use
     st.session_state.content_recs = content_recs
