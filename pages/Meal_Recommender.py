@@ -11,6 +11,26 @@ from fpdf import FPDF
 
 st.set_page_config(page_title="Dynamic Meal Recommender", layout="wide")
 
+# Initialize session keys if missing
+for key in ['rec_type', 'content_recs', 'collaborative_recs', 'bmi']:
+    if key not in st.session_state:
+        st.session_state[key] = None
+
+if 'rec_type' not in st.session_state:
+    st.session_state.rec_type = None
+if 'content_recs' not in st.session_state:
+    st.session_state.content_recs = None
+if 'collaborative_recs' not in st.session_state:
+    st.session_state.collaborative_recs = None
+if 'bmi' not in st.session_state:
+    st.session_state.bmi = None
+    
+if st.session_state.rec_type:
+    st.header(st.session_state.rec_type)
+else:
+    st.warning("No recommendations yet. Click 'Generate Recommendations'.")
+
+
 # Load dataset from provided CSV content
 CSV_CONTENT = """item id,item,servesize,calories,protien,totalfat,satfat,transfat,cholestrol,carbs,sugar,addedsugar,sodium,menu,Ratings
 0,McVeggie Burger,168 ,402,10.24,13.83,5.34,0.16,2.49,56.54,7.9,4.49,706.13,regular,1
