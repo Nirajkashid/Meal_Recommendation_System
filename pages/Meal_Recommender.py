@@ -278,4 +278,42 @@ if 'content_recs' in st.session_state:
                 <p>Calories: {row['calories']:.0f}</p>
                 <p>Protein: {row['protien']}g</p>
                 <p>Carbs: {row['carbs']}g</p>
-                <p>Fat: {row['totalfat']}g</
+                <p>Fat: {row['totalfat']}g</p>
+                <p>Rating: {row['Ratings']}/20</p>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    # Visualizations
+    st.header("Nutritional Profile Comparison")
+    show_radar_chart(st.session_state.content_recs)
+    
+    # PDF Generation
+    st.header("Export Options")
+    user_name = st.text_input("Enter your name for PDF export:")
+    if st.button("Generate PDF Report"):
+        if user_name:
+            pdf_file = generate_diet_plan_pdf(
+                user_name,
+                st.session_state.bmi,
+                st.session_state.content_recs,
+                st.session_state.collab_recs
+            )
+            with open(pdf_file, "rb") as f:
+                st.download_button(
+                    "Download Diet Plan",
+                    data=f,
+                    file_name=pdf_file,
+                    mime="application/octet-stream"
+                )
+        else:
+            st.warning("Please enter your name to generate PDF")
+
+# Recommendation History Sidebar
+st.sidebar.header("Recommendation History")
+if 'rec_history' in st.session_state:
+    for rec in reversed(st.session_state.rec_history[-5:]):
+        with st.sidebar.expander(f"BMI {rec['bmi']:.1f}"):
+            for meal in rec['recommendations']:
+                st.write(f"- {meal}")
+else:
+    st.sidebar.write("No history yet")
