@@ -1,136 +1,287 @@
 .stApp {
-    background-color: #1a1a1a; /* Dark background */
+    background-color: #fafafa; /* Very light grey for a softer background */
     font-family: 'Arial', sans-serif;
-    color: #ffffff; /* Light text */
-    position: relative;
-    overflow-x: hidden;
+    color: #333333; /* Default text color */
 }
 
-/* Subtle geometric pattern */
-.stApp::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.05;
-    z-index: 0;
-    background-image: 
-        radial-gradient(circle at 10% 10%, #3d3d3d 1%, transparent 2%),
-        radial-gradient(circle at 90% 90%, #3d3d3d 1%, transparent 2%);
-    background-size: 40px 40px;
-}
-
-/* Colorful Meal Cards */
+/* Add this in your style1.css or inline */
 .meal-card {
-    background-color: #2a2a2a;
-    color: #ffffff;
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    position: relative;
-    z-index: 1;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border-left: 4px solid; /* Color set below */
-}
-
-/* Different border colors for cards */
-.meal-card:nth-child(3n+1) { border-color: #FF4B4B; } /* Red */
-.meal-card:nth-child(3n+2) { border-color: #4CAF50; } /* Green */
-.meal-card:nth-child(3n+3) { border-color: #3498DB; } /* Blue */
-
-.meal-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.5);
-}
-
-/* Collaborative cards keep green border */
-.meal-card.collab {
-    border-color: #4CAF50 !important;
-}
-
-/* Dark theme adjustments */
-h1, h2, h3 {
-    color: #ffffff;
-    position: relative;
-    z-index: 1;
-}
-
-.feature-box, .viz-description, .viz-info, .insight-box {
     background-color: #2c2c2c;
     color: #ffffff;
-    border: 1px solid #3d3d3d;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+}
+
+.meal-card:hover {
+    transform: translateY(-2px);
+}
+
+.meal-card.collab {
+    border-left: 4px solid #4CAF50; /* Green border for collaborative recommendations */
+}
+
+.stButton>button {
+    background-color: #FF4B4B; /* Red button for primary actions */
+    color: white;
+    border-radius: 25px;
+    padding: 0.5rem 2rem;
+    border: none;
+    font-size: 1.1rem;
+    transition: background-color 0.2s;
+}
+
+.stButton>button:hover {
+    background-color: #FF3333; /* Darker red on hover */
+}
+
+h1, h2, h3 {
+    color: #2C3E50; /* Dark blue for headings */
+}
+
+.feature-box {
+    background-color: #ffffff; /* White background for feature boxes */
+    color: #212121;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.feature-box h4 {
+    color: #FF4B4B; /* Red for subheadings */
+    margin-bottom: 1rem;
+}
+
+.feature-box ul {
+    padding-left: 1.5rem;
+}
+
+.feature-box li {
+    margin-bottom: 0.5rem;
+}
+
+.viz-description {
+    background-color: #ffffff; /* White background for visualization descriptions */
+    color: #333333;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-left: 4px solid #3498DB; /* Blue border for visualization descriptions */
+}
+
+.viz-info {
+    background-color: #ffffff; /* White background for visualization info */
+    color: #333333;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-left: 4px solid #9B59B6; /* Purple border for visualization info */
+}
+
+.cta-box {
+    background-color: #f0f0f0; /* Very soft grey for call-to-action boxes */
+    color: #212121;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    text-align: center;
+    border: 2px dashed #FF4B4B; /* Red dashed border for call-to-action boxes */
+}
+
+.insight-box {
+    background-color: #ffffff; /* White background for insight boxes */
+    color: #333333;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.insight-box.underweight {
+    border-left: 4px solid #FF9800; /* Orange border for underweight insights */
+}
+
+.insight-box.normal {
+    border-left: 4px solid #4CAF50; /* Green border for normal weight insights */
+}
+
+.insight-box.overweight {
+    border-left: 4px solid #F44336; /* Red border for overweight insights */
+}
+
+/* Tabs Styling */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 1rem;
+}
+
+.stTabs [data-baseweb="tab"] {
+    height: 3rem;
+    white-space: pre-wrap;
+    background-color: #e0e0e0; /* Light grey for tabs */
+    color: #333333;
+    border-radius: 4px 4px 0 0;
+    padding: 0.5rem 1rem;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+}
+
+.stTabs [aria-selected="true"] {
+    background-color: #FF4B4B; /* Red for selected tab */
+    color: white;
 }
 
 /* Input Fields */
 input[type="number"], select {
-    background-color: #333333;
-    color: #ffffff;
-    border: 1px solid #4d4d4d;
+    background-color: #f0f0f0; /* Light grey for input fields */
+    color: #333333;
+    border-radius: 5px;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+}
+/* Download button specific style */
+.download-button button {
+    background-color: #4CAF50; /* Green for download */
+    color: white;
+    border-radius: 20px;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-/* BMI Components */
+.download-button button:hover {
+    background-color: #45A049; /* Darker green on hover */
+    transform: scale(1.05);
+}
+
+/* Personal Details & BMI Input Labels */
+.personal-details-container h4 {
+    color: var(--button-bg);
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.personal-details-container label {
+    color: var(--secondary-text-color);
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+
+/* Main container styling */
+.main-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+}
+
+/* BMI result styling */
 .bmi-result {
-    background-color: #2c2c2c;
-    color: #FF4B4B;
-    border: 1px solid #3d3d3d;
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+    margin: 20px 0;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f0f0f0;
 }
 
-/* Buttons */
-.stButton>button {
-    background-color: #FF4B4B;
-    border: 1px solid #ff6666;
+/* Status message styling */
+.status-message {
+    text-align: center;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 500;
 }
 
-/* Widget Labels */
-[data-testid="stWidgetLabel"] {
-    color: #ffffff !important;
+/* Specific status styles */
+.underweight {
+    background-color: #fff3cd;
+    border-left: 5px solid #ffc107;
+    color: #856404;
 }
 
-/* Glow effect for cards */
-.meal-card::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 12px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+.normal-weight {
+    background-color: #d4edda;
+    border-left: 5px solid #28a745;
+    color: #155724;
 }
 
-.meal-card:hover::after {
-    opacity: 0.1;
-    box-shadow: 
-        0 0 15px rgba(255, 75, 75, 0.3),
-        0 0 30px rgba(76, 175, 80, 0.2);
+.overweight {
+    background-color: #f8d7da;
+    border-left: 5px solid #dc3545;
+    color: #721c24;
 }
 
-/* Responsive Design */
+/* Input field styling */
+.stTextInput > div > div > input {
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    font-size: 16px;
+}
+
+/* Button styling */
+.stButton > button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+.stButton > button:hover {
+    background-color: #45a049;
+}
+
+/* Responsive styling */
 @media (max-width: 600px) {
-    .meal-card {
-        margin-bottom: 1rem;
-        padding: 1rem;
+    .main-container {
+        padding: 10px;
+    }
+    
+    .bmi-result {
+        font-size: 28px;
+    }
+    
+    .status-message {
+        font-size: 16px;
     }
 }
 
-/* Color adjustments for other elements */
-.insight-box.underweight { border-color: #FF9800; }
-.insight-box.normal { border-color: #4CAF50; }
-.insight-box.overweight { border-color: #F44336; }
-
-.stTabs [data-baseweb="tab"] {
-    background-color: #333333;
-    color: #ffffff;
+/* Headings for clarity */
+h3 {
+    font-size: 1.8rem;
+    font-weight: bold;
 }
 
-.stTabs [aria-selected="true"] {
-    background-color: #FF4B4B;
+/* BMI result box */
+.bmi-result {
+    background-color: #ffffff;
+    color: #FF4B4B;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
-
-.viz-description { border-color: #3498DB; }
-.viz-info { border-color: #9B59B6; }
-.cta-box { border-color: #FF4B4B; }
