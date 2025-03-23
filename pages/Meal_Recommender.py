@@ -248,9 +248,15 @@ with st.container():
     """, unsafe_allow_html=True)
 
 # Recommendation Generation
-if st.button("Generate Meal Recommendations 🍽️"):
-    content_recs, rec_type, num_recs = content_based_recommendations(bmi, df)
-    collab_recs = collaborative_filtering(user_preferences, content_recs, num_recs, bmi)
+if st.button("Generate Recommendations", key="gen_rec"):
+    content_recs, recommendation_type, num_recs = content_based_recommendations(bmi, df)
+
+    st.session_state.content_recs = content_recs
+    st.session_state.rec_type = recommendation_type
+    st.session_state.bmi = bmi
+
+    collaborative_recs = collaborative_filtering(user_preferences, content_recs, num_recs, bmi)
+    st.session_state.collaborative_recs = collaborative_recs
     
     # Store in session state
     st.session_state.update({
@@ -294,7 +300,8 @@ else:
     from streamlit_extras.switch_page_button import switch_page
     if st.button("🔄 Go to Meal Recommender"):
         switch_page("Meal_Recommender")
-        
+
+    
 
 
     # Save these in session state for other pages or tabs to use
