@@ -4,7 +4,7 @@ from streamlit_lottie import st_lottie
 from streamlit_extras.switch_page_button import switch_page
 
 # Set page config
-st.set_page_config(page_title="Meal Recommender", layout="wide")
+st.set_page_config(page_title="Meal Recommendation System", layout="wide")
 
 # Load CSS
 with open('style1.css') as f:
