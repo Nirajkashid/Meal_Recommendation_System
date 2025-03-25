@@ -4,7 +4,7 @@ from streamlit_lottie import st_lottie
 from streamlit_extras.switch_page_button import switch_page
 
 # Set page config
-st.set_page_config(page_title="Meal Recommendation System", layout="wide")
+st.set_page_config(page_title="Meal Recommender", layout="wide")
 
 # Load CSS
 with open('style1.css') as f:
@@ -29,7 +29,7 @@ lottie_path = load_lottie("./ani.json")
 col1, col2 = st.columns([2, 3])
 
 with col1:
-    st.title("Meal Recommender")
+    st.title("Meal Recommendation System")
 
     st.markdown("""
     <div style='border-left: 5px solid #FF4B4B; padding-left: 1rem;'>
