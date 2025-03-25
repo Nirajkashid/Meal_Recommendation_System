@@ -150,18 +150,18 @@ def generate_diet_plan_pdf(user_name, bmi, content_recs, collab_recs):
 with open('style1.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
-st.title("🍔 Dynamic Meal Recommender 🥗")
+st.title("🍔 Dynamic Meal Recommender 🍕")
 
 col_nav1, col_nav3 = st.columns([1, 1])
 with col_nav1:
-    if st.button("← Home", use_container_width=True):
+    if st.button("← Home🤠", use_container_width=True):
         switch_page("HomePage")
 with col_nav3:
-    if st.button("Visualizations →", use_container_width=True):
+    if st.button("😏Visualizations →", use_container_width=True):
         switch_page("Visualizations")
 
 with st.container():
-    st.header("Personal Information")
+    st.header("Personal Information😶‍🌫️")
     col1, col2, col3, col4 = st.columns(4)
     weight = col1.number_input('Weight (kg):⚖️', min_value=30.0, value=70.0)
     height = col2.number_input('Height (cm):📏', min_value=100.0, value=170.0)
@@ -171,7 +171,7 @@ with st.container():
     st.markdown(f"""
     <div class="bmi-result">
         Your BMI: {bmi:.1f}<br>
-        {['Underweight 🤢', 'Normal Weight 😊', 'Overweight ⚠️'][ (bmi >= 18.5) + (bmi >= 25) ]}
+        {['Underweight 😵', 'Normal Weight 😇', 'Overweight ⚠️'][ (bmi >= 18.5) + (bmi >= 25) ]}
     </div>
     """, unsafe_allow_html=True)
 
@@ -209,7 +209,7 @@ if st.session_state.content_recs is not None:
 
 
 if st.session_state.collaborative_recs is not None:
-    st.header("You Might Also Like")
+    st.header("🍟You Might Also Like")
     cols = st.columns(3)
     for idx, (_, row) in enumerate(st.session_state.collaborative_recs.iterrows()):
         with cols[idx % 3]:
@@ -225,21 +225,21 @@ if st.session_state.collaborative_recs is not None:
             """, unsafe_allow_html=True)
             
 
-    st.header("Nutritional Profile Comparison")
+    st.header("Nutritional Profile Comparison👨🏻‍🔬")
     show_radar_chart(st.session_state.content_recs)
 
-    st.header("Export Options")
+    st.header("Export Options👨🏻‍💻")
     user_name = st.text_input("Enter your name for PDF export:")
     if st.button("Generate PDF Report") and user_name:
         pdf_file = generate_diet_plan_pdf(user_name, bmi, st.session_state.content_recs, st.session_state.collaborative_recs)
         with open(pdf_file, "rb") as f:
             st.download_button("Download Diet Plan", data=f, file_name=pdf_file, mime="application/pdf")
 
-st.sidebar.header("Recommendation History")
+st.sidebar.header("Recommendation History🕵🏻‍♂️")
 if st.session_state.rec_history:
     for rec in reversed(st.session_state.rec_history[-5:]):
         with st.sidebar.expander(f"BMI {rec['bmi']:.1f}"):
             for meal in rec['recommendations']:
                 st.write(f"- {meal}")
 else:
-    st.sidebar.write("No history yet.")
+    st.sidebar.write("No history yet.🤥")
