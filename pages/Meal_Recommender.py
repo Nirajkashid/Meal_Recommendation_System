@@ -161,7 +161,7 @@ with col_nav3:
         switch_page("Visualizations")
 
 with st.container():
-    st.header("Personal Information😶‍🌫️")
+    st.header("Personal Information")
     col1, col2, col3, col4 = st.columns(4)
     weight = col1.number_input('Weight (kg):⚖️', min_value=30.0, value=70.0)
     height = col2.number_input('Height (cm):📏', min_value=100.0, value=170.0)
@@ -192,7 +192,7 @@ if st.button("Generate Recommendations"):
 
 if st.session_state.content_recs is not None:
     st.header(st.session_state.rec_type)
-    st.subheader("🍱 Content-Based Recommendations")
+    st.subheader("🌭 Content-Based Recommendations")
     cols = st.columns(3)
     for idx, (_, row) in enumerate(st.session_state.content_recs.iterrows()):
         with cols[idx % 3]:
