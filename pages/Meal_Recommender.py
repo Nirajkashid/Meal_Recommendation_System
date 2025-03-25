@@ -196,32 +196,32 @@ if st.session_state.content_recs is not None:
     cols = st.columns(3)
     for idx, (_, row) in enumerate(st.session_state.content_recs.iterrows()):
         with cols[idx % 3]:
-            st.markdown(f"""
-                <div class="meal-card">
-                    <h4>{row['item']}</h4>
-                    <p>Calories: {row['calories']:.0f}</p>
-                    <p>Protein: {row['protien']}g</p>
-                    <p>Carbs: {row['carbs']}g</p>
-                    <p>Fat: {row['totalfat']}g</p>
-                    <p>Rating: {row['Ratings']}/20</p>
-                </div>
-            """, unsafe_allow_html=True)
+     st.markdown(f"""
+    <div class="meal-card">
+        <h4>{row['item']}</h4>
+        <p>Calories: {row['calories']:.0f}</p>
+        <p>Protein: {row['protien']}g</p>
+        <p>Carbs: {row['carbs']}g</p>
+        <p>Fat: {row['totalfat']}g</p>
+        <p>Rating: {row['Ratings']}/20</p>
+    </div>
+""", unsafe_allow_html=True)
 
 if st.session_state.collaborative_recs is not None:
     st.header("You Might Also Like")
     cols = st.columns(3)
     for idx, (_, row) in enumerate(st.session_state.collaborative_recs.iterrows()):
         with cols[idx % 3]:
-            st.markdown(f"""
-                <div class="meal-card collab">
-                    <h4>{row['item']}</h4>
-                    <p>Calories: {row['calories']:.0f}</p>
-                    <p>Protein: {row['protien']}g</p>
-                    <p>Carbs: {row['carbs']}g</p>
-                    <p>Fat: {row['totalfat']}g</p>
-                    <p>Rating: {row['Ratings']}/20</p>
-                </div>
-            """, unsafe_allow_html=True)
+             st.markdown(f"""
+    <div class="meal-card">
+        <h4>{row['item']}</h4>
+        <p>Calories: {row['calories']:.0f}</p>
+        <p>Protein: {row['protien']}g</p>
+        <p>Carbs: {row['carbs']}g</p>
+        <p>Fat: {row['totalfat']}g</p>
+        <p>Rating: {row['Ratings']}/20</p>
+    </div>
+""", unsafe_allow_html=True)
     st.header("Nutritional Profile Comparison")
     show_radar_chart(st.session_state.content_recs)
 
