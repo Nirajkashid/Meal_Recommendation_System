@@ -6,28 +6,18 @@
 
 .meal-card {
     background-color: #f9f9f9;  /* Light background */
-    color: #333;  /* Dark text for contrast */
+    color: #333;  /* Dark text for readability */
     border-radius: 12px;
     padding: 1rem;
     margin-bottom: 1rem;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     border: 2px solid #ddd;  /* Light border */
-    display: flex;
-    align-items: center;
 }
-
 .meal-card h4 {
     margin: 0;
     font-size: 1.2rem;
-    display: flex;
-    align-items: center;
 }
 
-/* Emoji styling */
-.emoji {
-    margin-left: 8px;
-    font-size: 1.5rem;
-}
 }
 
 .meal-card:hover {
