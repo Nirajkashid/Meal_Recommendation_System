@@ -196,7 +196,7 @@ if st.session_state.content_recs is not None:
     cols = st.columns(3)
     for idx, (_, row) in enumerate(st.session_state.content_recs.iterrows()):
         with cols[idx % 3]:
-     st.markdown(f"""
+  st.markdown(f"""
     <div class="meal-card">
         <h4>{row['item']}</h4>
         <p>Calories: {row['calories']:.0f}</p>
@@ -212,7 +212,7 @@ if st.session_state.collaborative_recs is not None:
     cols = st.columns(3)
     for idx, (_, row) in enumerate(st.session_state.collaborative_recs.iterrows()):
         with cols[idx % 3]:
-             st.markdown(f"""
+         st.markdown(f"""
     <div class="meal-card">
         <h4>{row['item']}</h4>
         <p>Calories: {row['calories']:.0f}</p>
