@@ -3,7 +3,6 @@ import streamlit as st
 from streamlit_lottie import st_lottie
 from streamlit_extras.switch_page_button import switch_page
 
-# ❌ Removed incorrect imports: get_pages (not needed)
 
 # Set page config
 st.set_page_config(page_title="Meal Recommender", layout="wide")
@@ -13,6 +12,7 @@ with open('style1.css') as f:
     css = f.read()
 st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
 
+
 # Optional: Reset session button
 if st.sidebar.button("🔄 Reset Session"):
     for key in list(st.session_state.keys()):
@@ -21,12 +21,8 @@ if st.sidebar.button("🔄 Reset Session"):
 
 # Load Lottie animation
 def load_lottie(path: str):
-    try:
-        with open(path, "r") as p:
-            return json.load(p)
-    except FileNotFoundError:
-        st.error(f"Error: The file '{path}' was not found.")
-        return None
+    with open(path, "r") as p:
+        return json.load(p)
 
 lottie_path = load_lottie("./ani.json")
 
@@ -65,5 +61,4 @@ with col1:
             switch_page("Visualizations")
 
 with col2:
-    if lottie_path:  # Ensure animation exists before displaying
-        st_lottie(lottie_path, height=400, key="home_animation")
+    st_lottie(lottie_path, height=400, key="home_animation")
