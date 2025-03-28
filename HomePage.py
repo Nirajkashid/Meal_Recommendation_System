@@ -2,6 +2,8 @@ import json
 import streamlit as st
 from streamlit_lottie import st_lottie
 from streamlit_extras.switch_page_button import switch_page
+from streamlit.runtime.scriptrunner import get_pages
+
 
 # Set page config
 st.set_page_config(page_title="Meal Recommender", layout="wide")
