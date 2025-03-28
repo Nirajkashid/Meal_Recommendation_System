@@ -3,77 +3,64 @@ import streamlit as st
 from streamlit_lottie import st_lottie
 from streamlit_extras.switch_page_button import switch_page
 from streamlit.runtime.scriptrunner import get_pages
+from streamlit._runtime.state import get_pages
 
 
 # Set page config
-st.set_page_config(
-    page_title="Meal Recommendation System",
-    page_icon="🍽️",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+st.set_page_config(page_title="Meal Recommender", layout="wide")
 
-# Custom CSS styling
-st.markdown("""
-    <style>
-        .main {
-            background: linear-gradient(to right, #ff9966, #ff5e62);
-            color: #ffffff;
-        }
-        .stButton>button {
-            background-color: #4CAF50;
-            color: white;
-            border-radius: 8px;
-            padding: 10px 24px;
-            transition: all 0.3s;
-        }
-        .stButton>button:hover {
-            background-color: #45a049;
-            transform: scale(1.05);
-        }
-        .title-text {
-            font-size: 3.5em;
-            text-shadow: 2px 2px 4px #000000;
-        }
-    </style>
-""", unsafe_allow_html=True)
+# Load CSS
+with open('style1.css') as f:
+    css = f.read()
+st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
 
-# Main content
-col1, col2 = st.columns([1, 3])
+
+# Optional: Reset session button
+if st.sidebar.button("🔄 Reset Session"):
+    for key in list(st.session_state.keys()):
+        del st.session_state[key]
+    st.success("Session reset! Starting fresh...")
+
+# Load Lottie animation
+def load_lottie(path: str):
+    with open(path, "r") as p:
+        return json.load(p)
+
+lottie_path = load_lottie("./ani.json")
+
+# Home Page Layout
+col1, col2 = st.columns([2, 3])
 
 with col1:
-    st.image("https://cdn-icons-png.flaticon.com/512/1046/1046784.png", width=150)
+    st.title("Meal Recommendation System")
+
+    st.markdown("""
+    <div style='border-left: 5px solid #FF4B4B; padding-left: 1rem;'>
+        <h3 style='color: #FF4B4B;'>Get Personalized Meal Recommendations Based on Your BMI</h3>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="feature-box">
+        <h4>Features:</h4>
+        <ul>
+            <li>BMI-based meal recommendations</li>
+            <li>Content-based filtering for nutrition matching</li>
+            <li>Collaborative filtering with similar user preferences</li>
+            <li>Detailed nutrition insights</li>
+            <li>Interactive data visualizations</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
+
+    col_btn1, col_btn2 = st.columns(2)
+    with col_btn1:
+        if st.button("🍔 Get Recommendations", use_container_width=True):
+            switch_page("Meal_Recommender")
+
+    with col_btn2:
+        if st.button("📊 View Visualizations", use_container_width=True):
+            switch_page("Visualizations")
 
 with col2:
-    st.markdown('<p class="title-text">Meal Recommendation System</p>', unsafe_allow_html=True)
-    st.markdown("**Discover personalized meal recommendations based on your preferences!**")
-
-st.markdown("---")
-
-# Features section
-st.header("Features")
-features = [
-    ("🍳", "Personalized Recommendations", "Get meal suggestions based on your dietary needs"),
-    ("📊", "Nutrition Insights", "Detailed nutritional breakdown for each meal"),
-    ("❤️", "Health First", "Recipes tailored to support your health goals"),
-    ("⭐", "User Favorites", "Explore our most popular recipes"),
-]
-
-cols = st.columns(4)
-for i, (icon, title, text) in enumerate(features):
-    with cols[i]:
-        st.markdown(f"<h3>{icon} {title}</h3>", unsafe_allow_html=True)
-        st.markdown(f"<small>{text}</small>", unsafe_allow_html=True)
-
-# Action buttons
-st.markdown("---")
-col_btn1, col_btn2 = st.columns(2)
-
-with col_btn1:
-    if st.button("🍔 Get Recommendations", use_container_width=True):
-        st.switch_page("pages/Meal_Recommender.py")
-
-with col_btn2:
-    if st.button("📊 View Visualizations", use_container_width=True):
-        st.switch_page("pages/Visualizations.py")
-
+    st_lottie(lottie_path, height=400, key="home_animation"
