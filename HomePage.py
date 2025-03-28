@@ -63,4 +63,4 @@ with col1:
             switch_page("Visualizations")
 
 with col2:
-    st_lottie(lottie_path, height=400, key="home_animation"
+    st_lottie(lottie_path, height=400, key="home_animation")
