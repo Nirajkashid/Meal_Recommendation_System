@@ -57,12 +57,12 @@ with col1:
     with col_btn1:
         if st.button("🍔 Get Recommendations", use_container_width=True):
             st.session_state["page"] = "Meal_Recommender"
-            st.experimental_rerun()
+            st.rerun()
 
     with col_btn2:
         if st.button("📊 View Visualizations", use_container_width=True):
             st.session_state["page"] = "Visualizations"
-            st.experimental_rerun()
+            st.rerun()
 
 with col2:
     st_lottie(lottie_path, height=400, key="home_animation")
