@@ -1,8 +1,11 @@
 import json
 import streamlit as st
 from streamlit_lottie import st_lottie
-from streamlit_extras.switch_page_button import switch_page
-
+import pandas as pd
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.neighbors import NearestNeighbors
+from scipy.stats import pearsonr
 
 # Set page config
 st.set_page_config(page_title="Meal Recommender", layout="wide")
@@ -11,7 +14,6 @@ st.set_page_config(page_title="Meal Recommender", layout="wide")
 with open('style1.css') as f:
     css = f.read()
 st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
-
 
 # Optional: Reset session button
 if st.sidebar.button("🔄 Reset Session"):
@@ -54,11 +56,13 @@ with col1:
     col_btn1, col_btn2 = st.columns(2)
     with col_btn1:
         if st.button("🍔 Get Recommendations", use_container_width=True):
-            switch_page("Meal_Recommender")
+            st.session_state["page"] = "Meal_Recommender"
+            st.experimental_rerun()
 
     with col_btn2:
         if st.button("📊 View Visualizations", use_container_width=True):
-            switch_page("Visualizations")
+            st.session_state["page"] = "Visualizations"
+            st.experimental_rerun()
 
 with col2:
     st_lottie(lottie_path, height=400, key="home_animation")
