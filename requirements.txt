@@ -10,4 +10,3 @@ plotly==5.18.0
 streamlit-extras>=0.3.0,<0.4.0
 fpdf>=1.7.2
 kaleido>=0.2.1
-pip install --upgrade streamlit streamlit-extras
