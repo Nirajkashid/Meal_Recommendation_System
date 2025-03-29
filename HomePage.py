@@ -56,13 +56,11 @@ with col1:
     col_btn1, col_btn2 = st.columns(2)
     with col_btn1:
         if st.button("🍔 Get Recommendations", use_container_width=True):
-            st.session_state["page"] = "Meal_Recommender"
-            st.rerun()
+            st.markdown("[Go to Meal Recommender](./Meal_Recommender)")
 
     with col_btn2:
         if st.button("📊 View Visualizations", use_container_width=True):
-            st.session_state["page"] = "Visualizations"
-            st.rerun()
+            st.markdown("[Go to Visualizations](./Visualizations)")
 
 with col2:
     st_lottie(lottie_path, height=400, key="home_animation")
