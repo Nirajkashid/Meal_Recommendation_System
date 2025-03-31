@@ -155,7 +155,7 @@ st.title("🍔 Dynamic Meal Recommender 🍕")
 
 if "page" in st.session_state:
     if st.session_state["page"] == "HomePage":
-        st.switch_page("pages/HomePage.py")  # Adjust path if needed
+        st.switch_page("HomePage")  # Adjust path if needed
     elif st.session_state["page"] == "Visualizations":
         st.switch_page("pages/Visualizations.py")
 
