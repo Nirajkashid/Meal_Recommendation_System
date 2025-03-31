@@ -25,15 +25,6 @@ st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
 
 st.title("Nutrition Insights & Visualizations")
 
-# Navigation Buttons
-col_nav1, col_nav2 = st.columns([1, 1])
-with col_nav1:
-    if st.button("← Home🤠", use_container_width=True):
-        switch_page("HomePage")
-with col_nav2:
-    if st.button("← Recommendations🤔", use_container_width=True):
-        switch_page("Meal_Recommender")
-
 # Check if recommendations exist
 if st.session_state.content_recs is None:
     st.warning("❎No recommendations generated yet. Please go to the Meal Recommender page first.")
