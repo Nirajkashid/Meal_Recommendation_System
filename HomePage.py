@@ -56,23 +56,6 @@ with col1:
     """, unsafe_allow_html=True)
 
 
-if "page" in st.session_state:
-    if st.session_state["page"] == "Meal_Recommender":
-        st.switch_page("pages/Meal_Recommender.py")  # Adjust path if needed
-    elif st.session_state["page"] == "Visualizations":
-        st.switch_page("pages/Visualizations.py")  # Adjust path if needed
-
-
-col_btn1, col_btn2 = st.columns(2)
-
-with col_btn1:
-    if st.button("🍔 Get Recommendations", use_container_width=True):
-        st.session_state["page"] = "Meal_Recommender"
-
-with col_btn2:
-    if st.button("📊 View Visualizations", use_container_width=True):
-        st.session_state["page"] = "Visualizations"
-
 
 with col2:
     st_lottie(lottie_path, height=400, key="home_animation")   
