@@ -57,13 +57,14 @@ with col1:
     """, unsafe_allow_html=True)
 
 
-col_btn1, col_btn2 = st.columns(2)
-with col_btn1:
-    if st.button("🍔 Get Recommendations", use_container_width=True):
-        st.query_params['page'] = 'Meal_Recommender'  # Name matches your page filename in 'pages'
-with col_btn2:
-    if st.button("📊 View Visualizations", use_container_width=True):
-        st.query_params['page'] = 'Visualizations'
+    col_btn1, col_btn2 = st.columns(2)
+    with col_btn1:
+        if st.button("🍔 Get Recommendations", use_container_width=True):
+            switch_page("Meal_Recommender")
+
+    with col_btn2:
+        if st.button("📊 View Visualizations", use_container_width=True):
+            switch_page("Visualizations")
 
 
 with col2:
