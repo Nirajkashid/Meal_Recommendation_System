@@ -152,13 +152,24 @@ with open('style1.css') as f:
 
 st.title("🍔 Dynamic Meal Recommender 🍕")
 
+
+
+if "page" in st.session_state:
+    if st.session_state["page"] == "HomePage":
+        st.markdown("[Go to Home](./)")
+    elif st.session_state["page"] == "Visualizations":
+        st.markdown("[Go to Visualizations](./Visualizations)")
+
+
 col_nav1, col_nav3 = st.columns([1, 1])
+
 with col_nav1:
-    if st.button("← Home🤠", use_container_width=True):
-        switch_page("HomePage")
+    if st.button("← Home 🤠", use_container_width=True):
+        st.session_state["page"] = "HomePage"
+
 with col_nav3:
-    if st.button("😏Visualizations →", use_container_width=True):
-        switch_page("Visualizations")
+    if st.button("😏 Visualizations →", use_container_width=True):
+        st.session_state["page"] = "Visualizations"
 
 with st.container():
     st.header("Personal Information")
