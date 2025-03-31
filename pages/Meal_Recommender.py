@@ -153,12 +153,11 @@ with open('style1.css') as f:
 st.title("🍔 Dynamic Meal Recommender 🍕")
 
 
-
 if "page" in st.session_state:
     if st.session_state["page"] == "HomePage":
-        st.markdown("[Go to Home](./)")
+        st.switch_page("pages/HomePage")  # Adjust path if needed
     elif st.session_state["page"] == "Visualizations":
-        st.markdown("[Go to Visualizations](./Visualizations)")
+        st.switch_page("pages/Visualizations.py")
 
 
 col_nav1, col_nav3 = st.columns([1, 1])
