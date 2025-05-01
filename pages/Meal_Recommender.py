@@ -154,6 +154,9 @@ st.title("🍔 Dynamic Meal Recommender 🍕")
 
 with st.container():
     st.header("Personal Information")
+    # Add name input field at the top
+    user_name = st.text_input("Your Name:", key="user_name")
+    
     col1, col2, col3, col4 = st.columns(4)
     weight = col1.number_input('Weight (kg):⚖️', min_value=30.0, value=70.0)
     height = col2.number_input('Height (cm):📏', min_value=100.0, value=170.0)
@@ -167,19 +170,24 @@ with st.container():
     </div>
     """, unsafe_allow_html=True)
 
+# Modify the recommendation generation section
 if st.button("Generate Recommendations"):
-    content_recs, rec_type, num_recs = content_based_recommendations(bmi, df)
-    collaborative_recs = collaborative_filtering(user_preferences, content_recs, num_recs, bmi)
-    st.session_state.update({
-        'content_recs': content_recs,
-        'collaborative_recs': collaborative_recs,
-        'rec_type': rec_type,
-        'bmi': bmi,
-        'rec_history': st.session_state.rec_history + [{
+    if not st.session_state.user_name:  # Check if name is provided
+        st.error("Please enter your name first!")
+    else:
+        content_recs, rec_type, num_recs = content_based_recommendations(bmi, df)
+        collaborative_recs = collaborative_filtering(user_preferences, content_recs, num_recs, bmi)
+        st.session_state.update({
+            'content_recs': content_recs,
+            'collaborative_recs': collaborative_recs,
+            'rec_type': rec_type,
             'bmi': bmi,
-            'recommendations': content_recs['item'].tolist()
-        }]
-    })
+            'rec_history': st.session_state.rec_history + [{
+                'name': st.session_state.user_name,  # Store name
+                'bmi': bmi,
+                'recommendations': content_recs['item'].tolist()
+            }]
+        })
     st.success("✅ Recommendations generated! Check below.")
 
 if st.session_state.content_recs is not None:
@@ -227,10 +235,14 @@ if st.session_state.collaborative_recs is not None:
         with open(pdf_file, "rb") as f:
             st.download_button("Download Diet Plan", data=f, file_name=pdf_file, mime="application/pdf")
 
+# Update the history display in sidebar 
 st.sidebar.header("Recommendation History🕵🏻‍♂️")
 if st.session_state.rec_history:
     for rec in reversed(st.session_state.rec_history[-5:]):
-        with st.sidebar.expander(f"BMI {rec['bmi']:.1f}"):
+        with st.sidebar.expander(f"{rec['name']} - BMI {rec['bmi']:.1f}"):
+            st.write(f"Name: {rec['name']}")
+            st.write(f"BMI: {rec['bmi']:.1f}")
+            st.write("Recommended Meals:")
             for meal in rec['recommendations']:
                 st.write(f"- {meal}")
 else:
